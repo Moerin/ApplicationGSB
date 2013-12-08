@@ -78,7 +78,7 @@
               <a href="cValiserFichesFrais.php" title="Saisie fiche de frais du mois courant">Valider fiche de frais</a>
            </li>
            <li class="smenu">
-              <a href="cSuiviePaiementFicheFrais.php" title="Consultation de mes fiches de frais">Suivre paiement fiches de frais</a>
+              <a href="cSuiviePaiementFichesFrais.php" title="Consultation de mes fiches de frais">Suivre paiement fiches de frais</a>
            </li>
          </ul>
         <?php
