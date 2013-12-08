@@ -46,7 +46,17 @@ function affecterInfosConnecte($id, $login) {
  *
  * @return void
  */
-function deconnecterVisiteur() {
+function deconnecterVisiteur() { 
+    unset($_SESSION["idUser"]);
+    unset($_SESSION["loginUser"]);
+}
+
+/** 
+ * Déconnecte le comptable qui s'est identifié sur le site.                     
+ *
+ * @return void
+ */
+function deconnecterComptable() { 
     unset($_SESSION["idUser"]);
     unset($_SESSION["loginUser"]);
 }
@@ -57,7 +67,18 @@ function deconnecterVisiteur() {
  * Retourne true si un visiteur s'est identifié sur le site, false sinon. 
  * @return boolean échec ou succès
  */
-function estVisiteurConnecte() {
+function estVisiteurConnecte() { 
+    // actuellement il n'y a que les visiteurs qui se connectent
+    return isset($_SESSION["loginUser"]);
+}
+
+/** 
+ * Vérifie si un comptable s'est connecté sur le site.                     
+ *
+ * Retourne true si un comptable s'est identifié sur le site, false sinon. 
+ * @return boolean échec ou succès
+ */
+function estComptableConnecte() { 
     // actuellement il n'y a que les visiteurs qui se connectent
     return isset($_SESSION["loginUser"]);
 }
