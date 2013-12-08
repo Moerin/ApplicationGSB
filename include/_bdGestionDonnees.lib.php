@@ -57,9 +57,9 @@ function deconnecterServeurBD($idCnx) {
  */    
 function filtrerChainePourBD($str) {
     if ( ! get_magic_quotes_gpc() ) { 
-        // si la directive de configuration magic_quotes_gpc est activ�e dans php.ini,
-        // toute cha�ne re�ue par get, post ou cookie est d�j� �chapp�e 
-        // par cons�quent, il ne faut pas �chapper la cha�ne une seconde fois                              
+        // si la directive de configuration magic_quotes_gpc est activée dans php.ini,
+        // toute chaine reçue par get, post ou cookie est déjà échappée 
+        // par conséquent, il ne faut pas échapper la chaîne une seconde fois                              
         $str = mysql_real_escape_string($str);
     }
     return $str;
@@ -74,6 +74,26 @@ function filtrerChainePourBD($str) {
  * @return array  tableau associatif du visiteur
  */
 function obtenirDetailVisiteur($idCnx, $unId) {
+    $id = filtrerChainePourBD($unId);
+    $requete = "select id, nom, prenom from visiteur where id='" . $unId . "'";
+    $idJeuRes = mysql_query($requete, $idCnx);  
+    $ligne = false;     
+    if ( $idJeuRes ) {
+        $ligne = mysql_fetch_assoc($idJeuRes);
+        mysql_free_result($idJeuRes);
+    }
+    return $ligne ;
+}
+
+/** 
+ * Fournit les informations sur un comptable demandé. 
+ * Retourne les informations du comptable d'id $unId sous la forme d'un tableau
+ * associatif dont les clés sont les noms des colonnes(id, nom, prenom).
+ * @param resource $idCnx identifiant de connexion
+ * @param string $unId id de l'utilisateur
+ * @return array  tableau associatif du visiteur
+ */
+function obtenirDetailComptable($idCnx, $unId) { // TODO : merge avec function obtenirDetailVisiteur
     $id = filtrerChainePourBD($unId);
     $requete = "select id, nom, prenom from visiteur where id='" . $unId . "'";
     $idJeuRes = mysql_query($requete, $idCnx);  
