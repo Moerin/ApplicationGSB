@@ -22,8 +22,8 @@ function connecterServeurBD() {
 }
 
 /**
- * S�lectionne (rend active) la base de donn�es.
- * S�lectionne (rend active) la BD pr�d�finie gsb_frais sur la connexion
+ * Sélectionne (rend active) la base de données.
+ * Sélectionne (rend active) la BD prédéfinie gsb_frais sur la connexion
  * identifi�e par $idCnx. Retourne true si succ�s, false sinon.
  * @param resource $idCnx identifiant de connexion
  * @return boolean succ�s ou �chec de s�lection BD 
@@ -95,7 +95,7 @@ function obtenirDetailVisiteur($idCnx, $unId) {
  */
 function obtenirDetailComptable($idCnx, $unId) { // TODO : merge avec function obtenirDetailVisiteur
     $id = filtrerChainePourBD($unId);
-    $requete = "select id, nom, prenom from visiteur where id='" . $unId . "'";
+    $requete = "select id, nom, prenom from comptable where id='" . $unId . "'";
     $idJeuRes = mysql_query($requete, $idCnx);  
     $ligne = false;     
     if ( $idJeuRes ) {
@@ -330,7 +330,7 @@ function modifierEltsForfait($idCnx, $unMois, $unIdVisiteur, $desEltsForfait) {
 }
 
 /**
- * Contr�le les informations de connexionn d'un utilisateur.
+ * Controle les informations de connexion d'un utilisateur Visiteur.
  * V�rifie si les informations de connexion $unLogin, $unMdp sont ou non valides.
  * Retourne les informations de l'utilisateur sous forme de tableau associatif 
  * dont les cl�s sont les noms des colonnes (id, nom, prenom, login, mdp)
@@ -340,11 +340,38 @@ function modifierEltsForfait($idCnx, $unMois, $unIdVisiteur, $desEltsForfait) {
  * @param string $unMdp mot de passe 
  * @return array tableau associatif ou bool�en false 
  */
-function verifierInfosConnexion($idCnx, $unLogin, $unMdp) {
+function verifierInfosConnexionVisiteur($idCnx, $unLogin, $unMdp) {
     $unLogin = filtrerChainePourBD($unLogin);
     $unMdp = filtrerChainePourBD($unMdp);
-    // le mot de passe est crypt� dans la base avec la fonction de hachage md5
-    $req = "select id, nom, prenom, login, mdp from Visiteur where login='".$unLogin."' and mdp='" . $unMdp . "'";
+    // le mot de passe est crypté dans la base avec la fonction de hachage md5
+    $req = "select id, nom, prenom, login, mdp from visiteur where login='".$unLogin."' and mdp='" . $unMdp . "'";
+    
+    $idJeuRes = mysql_query($req, $idCnx);
+    $ligne = false;
+    if ( $idJeuRes ) {
+        $ligne = mysql_fetch_assoc($idJeuRes);
+        mysql_free_result($idJeuRes);
+    }
+    return $ligne;
+}
+
+/**
+ * Controle les informations de connexion d'un utilisateur Comptable.
+ * Vérifie si les informations de connexion $unLogin, $unMdp sont ou non valides.
+ * Retourne les informations de l'utilisateur sous forme de tableau associatif 
+ * dont les clés sont les noms des colonnes (id, nom, prenom, login, mdp)
+ * si login et mot de passe existent, le bool�en false sinon. 
+ * @param resource $idCnx identifiant de connexion
+ * @param string $unLogin login 
+ * @param string $unMdp mot de passe 
+ * @return array tableau associatif ou booléen false 
+ */
+function verifierInfosConnexionComptable($idCnx, $unLogin, $unMdp) {
+    $unLogin = filtrerChainePourBD($unLogin);
+    $unMdp = filtrerChainePourBD($unMdp);
+    // le mot de passe est crypté dans la base avec la fonction de hachage md5
+    $req = "select id, nom, prenom, login, mdp from comptable where login='".$unLogin."' and mdp='" . $unMdp . "'";
+    
     $idJeuRes = mysql_query($req, $idCnx);
     $ligne = false;
     if ( $idJeuRes ) {
