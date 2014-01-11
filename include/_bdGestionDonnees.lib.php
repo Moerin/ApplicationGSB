@@ -162,17 +162,29 @@ function existeFicheFrais($idCnx, $unMois, $unIdVisiteur) {
  * @return string dernier mois sous la forme AAAAMM
  */
 function obtenirDernierMoisSaisi($idCnx, $unIdVisiteur) {
-	$requete = "select max(mois) as dernierMois from FicheFrais where idVisiteur='" .
+    $requete = "select max(mois) as dernierMois from FicheFrais where idVisiteur='" .
             $unIdVisiteur . "'";
-	$idJeuRes = mysql_query($requete, $idCnx);
+    $idJeuRes = mysql_query($requete, $idCnx);
     $dernierMois = false ;
     if ( $idJeuRes ) {
         $ligne = mysql_fetch_assoc($idJeuRes);
         $dernierMois = $ligne["dernierMois"];
         mysql_free_result($idJeuRes);
     }        
-	return $dernierMois;
+    return $dernierMois;
 }
+
+/**
+ * Seb
+ * Selectionne les visiteurs possedant une fiche de frais
+ * @return req visiteur avec fiche frais
+ */
+function obtenirReqVisiteurFicheFrais() {
+    $requete = "select Distinct visiteur.id, visiteur.nom from fichefrais join visiteur on fichefrais.idvisiteur = visiteur.id
+            where fichefrais.mois is not null";
+    
+    return $requete;
+} 
 
 /** 
  * Ajoute une nouvelle fiche de frais et les �l�ments forfaitis�s associ�s, 
@@ -188,10 +200,10 @@ function ajouterFicheFrais($idCnx, $unMois, $unIdVisiteur) {
     $unMois = filtrerChainePourBD($unMois);
     // modification de la derni�re fiche de frais du visiteur
     $dernierMois = obtenirDernierMoisSaisi($idCnx, $unIdVisiteur);
-	$laDerniereFiche = obtenirDetailFicheFrais($idCnx, $dernierMois, $unIdVisiteur);
-	if ( is_array($laDerniereFiche) && $laDerniereFiche['idEtat']=='CR'){
-		modifierEtatFicheFrais($idCnx, $dernierMois, $unIdVisiteur, 'CL');
-	}
+    $laDerniereFiche = obtenirDetailFicheFrais($idCnx, $dernierMois, $unIdVisiteur);
+    if ( is_array($laDerniereFiche) && $laDerniereFiche['idEtat']=='CR'){
+            modifierEtatFicheFrais($idCnx, $dernierMois, $unIdVisiteur, 'CL');
+    }
     
     // ajout de la fiche de frais � l'�tat Cr��
     $requete = "insert into FicheFrais (idVisiteur, mois, nbJustificatifs, montantValide, idEtat, dateModif) values ('" 
@@ -397,5 +409,5 @@ function modifierEtatFicheFrais($idCnx, $unMois, $unIdVisiteur, $unEtat) {
                "', dateModif = now() where idVisiteur ='" .
                $unIdVisiteur . "' and mois = '". $unMois . "'";
     mysql_query($requete, $idCnx);
-}             
+}
 ?>
