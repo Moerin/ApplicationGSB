@@ -66,36 +66,16 @@ function filtrerChainePourBD($str) {
 }
 
 /** 
- * Fournit les informations sur un visiteur demand�. 
- * Retourne les informations du visiteur d'id $unId sous la forme d'un tableau
+ * Fournit les informations sur un utilisateur demand�. 
+ * Retourne les informations du utilisateur d'id $unId sous la forme d'un tableau
  * associatif dont les cl�s sont les noms des colonnes(id, nom, prenom).
  * @param resource $idCnx identifiant de connexion
  * @param string $unId id de l'utilisateur
- * @return array  tableau associatif du visiteur
+ * @return array  tableau associatif du utilisateur
  */
-function obtenirDetailVisiteur($idCnx, $unId) {
+function obtenirDetailUtilisateur($idCnx, $unId) {
     $id = filtrerChainePourBD($unId);
-    $requete = "select id, nom, prenom from visiteur where id='" . $unId . "'";
-    $idJeuRes = mysql_query($requete, $idCnx);  
-    $ligne = false;     
-    if ( $idJeuRes ) {
-        $ligne = mysql_fetch_assoc($idJeuRes);
-        mysql_free_result($idJeuRes);
-    }
-    return $ligne ;
-}
-
-/** 
- * Fournit les informations sur un comptable demandé. 
- * Retourne les informations du comptable d'id $unId sous la forme d'un tableau
- * associatif dont les clés sont les noms des colonnes(id, nom, prenom).
- * @param resource $idCnx identifiant de connexion
- * @param string $unId id de l'utilisateur
- * @return array  tableau associatif du visiteur
- */
-function obtenirDetailComptable($idCnx, $unId) { // TODO : merge avec function obtenirDetailVisiteur
-    $id = filtrerChainePourBD($unId);
-    $requete = "select id, nom, prenom from comptable where id='" . $unId . "'";
+    $requete = "select id, nom, prenom from utilisateur where id='" . $unId . "'";
     $idJeuRes = mysql_query($requete, $idCnx);  
     $ligne = false;     
     if ( $idJeuRes ) {
@@ -112,7 +92,7 @@ function obtenirDetailComptable($idCnx, $unId) { // TODO : merge avec function o
  * (nbJustitificatifs, idEtat, libelleEtat, dateModif, montantValide).
  * @param resource $idCnx identifiant de connexion
  * @param string $unMois mois demand� (MMAAAA)
- * @param string $unIdVisiteur id visiteur  
+ * @param string $unIdVisiteur id utilisateur  
  * @return array tableau associatif de la fiche de frais
  */
 function obtenirDetailFicheFrais($idCnx, $unMois, $unIdVisiteur) {
@@ -132,16 +112,16 @@ function obtenirDetailFicheFrais($idCnx, $unMois, $unIdVisiteur) {
               
 /** 
  * V�rifie si une fiche de frais existe ou non. 
- * Retourne true si la fiche de frais du mois de $unMois (MMAAAA) du visiteur 
- * $idVisiteur existe, false sinon. 
+ * Retourne true si la fiche de frais du mois de $unMois (MMAAAA) du utilisateur 
+ * $idUtilisateur existe, false sinon. 
  * @param resource $idCnx identifiant de connexion
  * @param string $unMois mois demand� (MMAAAA)
- * @param string $unIdVisiteur id visiteur  
+ * @param string $unIdVisiteur id utilisateur  
  * @return bool�en existence ou non de la fiche de frais
  */
 function existeFicheFrais($idCnx, $unMois, $unIdVisiteur) {
     $unMois = filtrerChainePourBD($unMois);
-    $requete = "select idVisiteur from FicheFrais where idVisiteur='" . $unIdVisiteur . 
+    $requete = "select idVisiteur from FicheFrais where idVisiteur='" . $$unIdVisiteur . 
               "' and mois='" . $unMois . "'";
     $idJeuRes = mysql_query($requete, $idCnx);  
     $ligne = false ;
@@ -155,10 +135,10 @@ function existeFicheFrais($idCnx, $unMois, $unIdVisiteur) {
 }
 
 /** 
- * Fournit le mois de la derni�re fiche de frais d'un visiteur.
- * Retourne le mois de la derni�re fiche de frais du visiteur d'id $unIdVisiteur.
+ * Fournit le mois de la derni�re fiche de frais d'un utilisateur.
+ * Retourne le mois de la derni�re fiche de frais du utilisateur d'id $unIdUtilisateur.
  * @param resource $idCnx identifiant de connexion
- * @param string $unIdVisiteur id visiteur  
+ * @param string $unIdUtilisateur id utilisateur  
  * @return string dernier mois sous la forme AAAAMM
  */
 function obtenirDernierMoisSaisi($idCnx, $unIdVisiteur) {
@@ -176,21 +156,21 @@ function obtenirDernierMoisSaisi($idCnx, $unIdVisiteur) {
 
 /**
  * Seb
- * Selectionne les noms et les id des visiteur 
+ * Selectionne les noms et les id des utilisateurs
  * tries dans l'ordre alphabétique pour les fiches de frais
  * @return req id et nom visiteur
  */
-function obtenirReqVisiteurFicheFrais() {
-    $requete = "select Distinct visiteur.id, visiteur.nom "
-            . "from visiteur order by nom asc";
+function obtenirRequtilisateurFicheFrais() {
+    $requete = "select Distinct utilisateur.id, utilisateur.nom "
+            . "from utilisateur order by nom asc";
     
     return $requete;
 } 
 
 /** 
  * Ajoute une nouvelle fiche de frais et les �l�ments forfaitis�s associ�s, 
- * Ajoute la fiche de frais du mois de $unMois (MMAAAA) du visiteur 
- * $idVisiteur, avec les �l�ments forfaitis�s associ�s dont la quantit� initiale
+ * Ajoute la fiche de frais du mois de $unMois (MMAAAA) du utilisateur 
+ * $idUtilisateur, avec les �l�ments forfaitis�s associ�s dont la quantit� initiale
  * est affect�e � 0. Cl�t �ventuellement la fiche de frais pr�c�dente du visiteur. 
  * @param resource $idCnx identifiant de connexion
  * @param string $unMois mois demand� (MMAAAA)
@@ -353,7 +333,7 @@ function modifierEltsForfait($idCnx, $unMois, $unIdVisiteur, $desEltsForfait) {
  * @param string $unMdp mot de passe 
  * @return array tableau associatif ou bool�en false 
  */
-function verifierInfosConnexionVisiteur($idCnx, $unLogin, $unMdp) {
+function verifierInfosConnexionUtilisateur($idCnx, $unLogin, $unMdp) {
     $unLogin = filtrerChainePourBD($unLogin);
     $unMdp = filtrerChainePourBD($unMdp);
     // le mot de passe est crypté dans la base avec la fonction de hachage md5

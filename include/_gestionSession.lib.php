@@ -15,10 +15,10 @@ function initSession() {
 }
 
 /** 
- * Fournit l'id du visiteur connecté.                     
+ * Fournit l'id de l'utilisateur connecté.                     
  *
- * Retourne l'id du visiteur connecté, une chaîne vide si pas de visiteur connecté.
- * @return string id du visiteur connecté
+ * Retourne l'id de l'utilisateur connecté, une chaîne vide si pas de utilisateur connecté.
+ * @return string id de l'utilisateur connecté
  */
 function obtenirIdUserConnecte() {
     $ident="";
@@ -29,11 +29,11 @@ function obtenirIdUserConnecte() {
 }
 
 /**
- * Conserve en variables session les informations du visiteur connecté
+ * Conserve en variables session les informations de l'utilisateur connecté
  * 
- * Conserve en variables session l'id $id et le login $login du visiteur connecté
- * @param string id du visiteur
- * @param string login du visiteur
+ * Conserve en variables session l'id $id et le login $login de l'utilisateur connecté
+ * @param string id de l'utilisateur
+ * @param string login de l'utilisateur
  * @return void    
  */
 function affecterInfosConnecte($id, $login) {
@@ -46,17 +46,7 @@ function affecterInfosConnecte($id, $login) {
  *
  * @return void
  */
-function deconnecterVisiteur() { 
-    unset($_SESSION["idUser"]);
-    unset($_SESSION["loginUser"]);
-}
-
-/** 
- * Déconnecte le comptable qui s'est identifié sur le site.                     
- *
- * @return void
- */
-function deconnecterComptable() { 
+function deconnecterUtilisateur() { 
     unset($_SESSION["idUser"]);
     unset($_SESSION["loginUser"]);
 }
@@ -67,19 +57,8 @@ function deconnecterComptable() {
  * Retourne true si un visiteur s'est identifié sur le site, false sinon. 
  * @return boolean échec ou succès
  */
-function estVisiteurConnecte() { 
-    // verifie si la variable $_SESSION["loginUser"] n'est pas nulle et si $_SESSION['typeVisiteur'] est vraie
-    return (isset($_SESSION["loginUser"]) && $_SESSION['typeVisiteur']);
-}
-
-/** 
- * Vérifie si un comptable s'est connecté sur le site.                     
- *
- * Retourne true si un comptable s'est identifié sur le site, false sinon. 
- * @return boolean échec ou succès
- */
-function estComptableConnecte() { 
-    // verifie si la variable $_SESSION["loginUser"] n'est pas nulle et si $_SESSION['typeComptable'] est vraie
-    return (isset($_SESSION["loginUser"]) && $_SESSION['typeComptable']);
+function estUtilisateurConnecte() { 
+    // verifie si la variable $_SESSION["loginUser"] n'est pas nulle
+    return (isset($_SESSION["loginUser"]));
 }
 ?>
