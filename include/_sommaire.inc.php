@@ -25,7 +25,7 @@
         <h3>Visiteur médical</h3>        
     <?php
     // Si l'utilisateur est un comptable on affiche ses informations
-      } else {
+      } else if (estComptableConnecte() ) {
           $idUser = obtenirIdUserConnecte() ;
           $lgUser = obtenirDetailComptable($idConnexion, $idUser);
           $nom = $lgUser['nom'];
@@ -65,7 +65,7 @@
           }
           ?>
 <?php
-  } else { // si c'est un comptable
+  } else if (estComptableConnecte() ) { // si c'est un comptable
 ?>
       <ul id="menuList">
            <li class="smenu">
@@ -75,7 +75,7 @@
               <a href="cSeDeconnecter.php" title="Se déconnecter">Se déconnecter</a>
            </li>
            <li class="smenu">
-              <a href="cValiserFichesFrais.php" title="Saisie fiche de frais du mois courant">Valider fiche de frais</a>
+              <a href="cValiderFichesFrais.php" title="Saisie fiche de frais du mois courant">Valider fiche de frais</a>
            </li>
            <li class="smenu">
               <a href="cSuiviePaiementFichesFrais.php" title="Consultation de mes fiches de frais">Suivre paiement fiches de frais</a>
