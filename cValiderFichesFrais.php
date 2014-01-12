@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <?php
 /** 
  * Script de contrôle et d'affichage du cas d'utilisation "Saisir fiche de frais"
@@ -133,3 +134,6 @@
   require($repInclude . "_pied.inc.html");
   require($repInclude . "_fin.inc.php");
 ?>
+=======
+POUET!!!
+>>>>>>> parent of 45856bd... Ajout de code Html pour mise en forme
