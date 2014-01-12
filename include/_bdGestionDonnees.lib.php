@@ -176,12 +176,13 @@ function obtenirDernierMoisSaisi($idCnx, $unIdVisiteur) {
 
 /**
  * Seb
- * Selectionne les visiteurs possedant une fiche de frais
- * @return req visiteur avec fiche frais
+ * Selectionne les noms et les id des visiteur 
+ * tries dans l'ordre alphabétique pour les fiches de frais
+ * @return req id et nom visiteur
  */
 function obtenirReqVisiteurFicheFrais() {
-    $requete = "select Distinct visiteur.id, visiteur.nom from fichefrais join visiteur on fichefrais.idvisiteur = visiteur.id
-            where fichefrais.mois is not null";
+    $requete = "select Distinct visiteur.id, visiteur.nom "
+            . "from visiteur order by nom asc";
     
     return $requete;
 } 
