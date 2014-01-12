@@ -68,8 +68,8 @@ function deconnecterComptable() {
  * @return boolean échec ou succès
  */
 function estVisiteurConnecte() { 
-    // actuellement il n'y a que les visiteurs qui se connectent
-    return isset($_SESSION["loginUser"]);
+    // verifie si la variable $_SESSION["loginUser"] n'est pas nulle et si $_SESSION['typeVisiteur'] est vraie
+    return (isset($_SESSION["loginUser"]) && $_SESSION['typeVisiteur']);
 }
 
 /** 
@@ -79,7 +79,7 @@ function estVisiteurConnecte() {
  * @return boolean échec ou succès
  */
 function estComptableConnecte() { 
-    // actuellement il n'y a que les visiteurs qui se connectent
-    return isset($_SESSION["loginUser"]);
+    // verifie si la variable $_SESSION["loginUser"] n'est pas nulle et si $_SESSION['typeComptable'] est vraie
+    return (isset($_SESSION["loginUser"]) && $_SESSION['typeComptable']);
 }
 ?>
