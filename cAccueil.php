@@ -8,7 +8,7 @@
   require($repInclude . "_init.inc.php");
 
   // page inaccessible si visiteur non connecté et si comptable non connecté
-  if ( ! estVisiteurConnecte() && ! estComptableConnecte() ) 
+  if ( ! estUtilisateurConnecte() ) 
   {
         header("Location: cSeConnecter.php");  
   }
