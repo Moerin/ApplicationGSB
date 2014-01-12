@@ -11,16 +11,27 @@
   $etape=(count($_POST)!=0)?'validerConnexion' : 'demanderConnexion';
   
   if ($etape=='validerConnexion') { // un client demande à s'authentifier
+      // variable de session pour indentifier le type d'utilisateur connecté
+      $_SESSION['typeVisiteur'] =  false;
+      $_SESSION['typeComptable'] = false;
+      
       // acquisition des données envoyées, ici login et mot de passe
       $login = lireDonneePost("txtLogin");
       $mdp = lireDonneePost("txtMdp");   
-      $lgUser = verifierInfosConnexion($idConnexion, $login, $mdp) ;
+      $lgUser = verifierInfosConnexionVisiteur($idConnexion, $login, $mdp) ;
       // si l'id utilisateur a été trouvé, donc informations fournies sous forme de tableau
       if ( is_array($lgUser) ) { 
           affecterInfosConnecte($lgUser["id"], $lgUser["login"]);
+          $_SESSION['typeVisiteur'] = true;
       }
       else {
-          ajouterErreur($tabErreurs, "Pseudo et/ou mot de passe incorrects");
+           $lgUser = verifierInfosConnexionComptable($idConnexion, $login, $mdp) ;
+           if ( is_array($lgUser) ) { 
+              affecterInfosConnecte($lgUser["id"], $lgUser["login"]);
+              $_SESSION['typeComptable'] = true;
+           } else {
+               ajouterErreur($tabErreurs, "Pseudo et/ou mot de passe incorrects");
+           }
       }
   }
   if ( $etape == "validerConnexion" && nbErreurs($tabErreurs) == 0 ) {
