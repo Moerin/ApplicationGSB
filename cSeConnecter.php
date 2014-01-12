@@ -11,18 +11,17 @@
   $etape=(count($_POST)!=0)?'validerConnexion' : 'demanderConnexion';
   
   if ($etape=='validerConnexion') { // un client demande à s'authentifier
-      // variable de session pour indentifier le type d'utilisateur connecté
-      $_SESSION['typeUtilisateur'] =  false;
       
       // acquisition des données envoyées, ici login et mot de passe
       $login = lireDonneePost("txtLogin");
       $mdp = lireDonneePost("txtMdp");   
       $lgUser = verifierInfosConnexionUtilisateur($idConnexion, $login, $mdp) ;
       // si l'id utilisateur a été trouvé, donc informations fournies sous forme de tableau
-      if ( is_array($lgUser) ) { 
-          affecterInfosConnecte($lgUser["id"], $lgUser["login"]);
-          $_SESSION['typeUtilisateur'] = true;
+      if ( is_array($lgUser) ) {
+          echo "GOOD";
+          affecterInfosConnecte($lgUser["id"], $lgUser["login"], $lgUser["idFonction"]); // modification ajout du type d'utilisateur
       } else {
+          echo "Pas Trouve";
           ajouterErreur($tabErreurs, "Pseudo et/ou mot de passe incorrects");
       }
       

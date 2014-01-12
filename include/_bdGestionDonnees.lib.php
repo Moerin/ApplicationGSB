@@ -75,7 +75,8 @@ function filtrerChainePourBD($str) {
  */
 function obtenirDetailUtilisateur($idCnx, $unId) {
     $id = filtrerChainePourBD($unId);
-    $requete = "select id, nom, prenom from utilisateur where id='" . $unId . "'";
+    $requete = "select utilisateur.id, nom, prenom, libelleFonction from "
+            . "utilisateur join fonction where utilisateur.id='" . $unId . "'";
     $idJeuRes = mysql_query($requete, $idCnx);  
     $ligne = false;     
     if ( $idJeuRes ) {
@@ -337,8 +338,7 @@ function verifierInfosConnexionUtilisateur($idCnx, $unLogin, $unMdp) {
     $unLogin = filtrerChainePourBD($unLogin);
     $unMdp = filtrerChainePourBD($unMdp);
     // le mot de passe est crypté dans la base avec la fonction de hachage md5
-    $req = "select id, nom, prenom, login, mdp from visiteur where login='".$unLogin."' and mdp='" . $unMdp . "'";
-    
+    $req = "select id, nom, prenom, login, mdp from visiteur where login='".$unLogin."' and mdp='" . $unMdp . "'"; //TODO: Je n'arrive plus a me connecter la base de donnee
     $idJeuRes = mysql_query($req, $idCnx);
     $ligne = false;
     if ( $idJeuRes ) {

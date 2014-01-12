@@ -11,38 +11,25 @@
      <div id="infosUtil">
     <?php
     // Si l'utilisateur est un visiteur on affiche ses informations
-      if (estUtilisateurConnecte() ) {
+      if ( estUtilisateurConnecte() ) {
           $idUser = obtenirIdUserConnecte() ;
           $lgUser = obtenirDetailUtilisateur($idConnexion, $idUser);
           $nom = $lgUser['nom'];
           $prenom = $lgUser['prenom'];
+          $fonction = $lgUser['libelleFonction'];
     ?>
         <h2>
     <?php  
             echo $nom . " " . $prenom ;
     ?>
         </h2>
-        <h3>Visiteur médical</h3>        
-    <?php
-    // Si l'utilisateur est un comptable on affiche ses informations
-      } else if (estComptableConnecte() ) {
-          $idUser = obtenirIdUserConnecte() ;
-          $lgUser = obtenirDetailComptable($idConnexion, $idUser);
-          $nom = $lgUser['nom'];
-          $prenom = $lgUser['prenom'];
-    ?>
-        <h2>
-    <?php  
-            echo $nom . " " . $prenom ;
-    ?>
-        </h2>
-        <h3>Comptable</h3>        
-    <?php
-       }
-    ?>  
+        <h3><?php echo $fonction; ?></h3>
+        <?php
+      }
+        ?>
       </div>  
 <?php      
-  if (estUtilisateurConnecte() ) {
+  if ( estUtilisateurConnecte() ) {
 ?>
         <ul id="menuList">
            <li class="smenu">
@@ -51,23 +38,25 @@
            <li class="smenu">
               <a href="cSeDeconnecter.php" title="Se déconnecter">Se déconnecter</a>
            </li>
+           <?php
+           if ($fonction == "Visiteur") { // si c'est un visiteur on met l'affichage correspondant
+           ?> 
            <li class="smenu">
               <a href="cSaisieFicheFrais.php" title="Saisie fiche de frais du mois courant">Saisie fiche de frais</a>
            </li>
            <li class="smenu">
               <a href="cConsultFichesFrais.php" title="Consultation de mes fiches de frais">Mes fiches de frais</a>
            </li>
-         </ul>
+        </ul>
         <?php
-          // affichage des éventuelles erreurs déjà détectées
-          if ( nbErreurs($tabErreurs) > 0 ) {
-              echo toStringErreurs($tabErreurs) ;
-          }
-          ?>
-<?php
-  } else if (estComptableConnecte() ) { // si c'est un comptable
-?>
-      <ul id="menuList">
+                // affichage des éventuelles erreurs déjà détectées
+                if ( nbErreurs($tabErreurs) > 0 ) {
+                    echo toStringErreurs($tabErreurs) ;   
+                }
+                
+          } else if ( $fonction == "comptable" ) { // si c'est un comptable on met l'affichage correspondant
+        ?>
+        <ul id="menuList">
            <li class="smenu">
               <a href="cAccueil.php" title="Page d'accueil">Accueil</a>
            </li>
@@ -82,11 +71,11 @@
            </li>
          </ul>
         <?php
-          // affichage des éventuelles erreurs déjà détectées
-          if ( nbErreurs($tabErreurs) > 0 ) {
-              echo toStringErreurs($tabErreurs) ;
-          }
+                // affichage des éventuelles erreurs déjà détectées
+                if ( nbErreurs($tabErreurs) > 0 ) {
+                    echo toStringErreurs($tabErreurs) ;
+                }
+        }
   }
         ?>
     </div>
-    
