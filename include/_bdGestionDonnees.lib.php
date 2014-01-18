@@ -75,8 +75,9 @@ function filtrerChainePourBD($str) {
  */
 function obtenirDetailUtilisateur($idCnx, $unId) {
     $id = filtrerChainePourBD($unId);
-    $requete = "select utilisateur.id, nom, prenom, libelleFonction from "
-            . "utilisateur join fonction where utilisateur.id='" . $unId . "'";
+    $requete = "select utilisateur.id, nom, prenom, libelleFonction 
+        from utilisateur join fonction on idFonction = fonction.id 
+        where utilisateur.id='" . $unId . "'";
     $idJeuRes = mysql_query($requete, $idCnx);  
     $ligne = false;     
     if ( $idJeuRes ) {
@@ -84,6 +85,18 @@ function obtenirDetailUtilisateur($idCnx, $unId) {
         mysql_free_result($idJeuRes);
     }
     return $ligne ;
+}
+
+/** 
+ * Fournit les informations des utilisateurs
+ * Retourne les noms des utilisateurs sous la forme d'un tableau
+ * associatif dont les clés sont les noms des colonnes(nom).
+ * @param resource $idCnx identifiant de connexion
+ * @return array  tableau associatif du utilisateur
+ */
+function obtenirReqListeUtilisateur() {
+    $requete = "select id, nom from utilisateur where idFonction = 1 order by nom";
+    return $requete;
 }
 
 /** 
@@ -161,8 +174,8 @@ function obtenirDernierMoisSaisi($idCnx, $unIdVisiteur) {
  * tries dans l'ordre alphabétique pour les fiches de frais
  * @return req id et nom visiteur
  */
-function obtenirRequtilisateurFicheFrais() {
-    $requete = "select Distinct utilisateur.id, utilisateur.nom "
+function obtenirReqUtilisateurFicheFrais() {
+    $requete = "select Distinct utilisateur.id, utilisateur.nom, utilisateur.prenom"
             . "from utilisateur order by nom asc";
     
     return $requete;
@@ -338,33 +351,7 @@ function verifierInfosConnexionUtilisateur($idCnx, $unLogin, $unMdp) {
     $unLogin = filtrerChainePourBD($unLogin);
     $unMdp = filtrerChainePourBD($unMdp);
     // le mot de passe est crypté dans la base avec la fonction de hachage md5
-    $req = "select id, nom, prenom, login, mdp from visiteur where login='".$unLogin."' and mdp='" . $unMdp . "'"; //TODO: Je n'arrive plus a me connecter la base de donnee
-    $idJeuRes = mysql_query($req, $idCnx);
-    $ligne = false;
-    if ( $idJeuRes ) {
-        $ligne = mysql_fetch_assoc($idJeuRes);
-        mysql_free_result($idJeuRes);
-    }
-    return $ligne;
-}
-
-/**
- * Controle les informations de connexion d'un utilisateur Comptable.
- * Vérifie si les informations de connexion $unLogin, $unMdp sont ou non valides.
- * Retourne les informations de l'utilisateur sous forme de tableau associatif 
- * dont les clés sont les noms des colonnes (id, nom, prenom, login, mdp)
- * si login et mot de passe existent, le bool�en false sinon. 
- * @param resource $idCnx identifiant de connexion
- * @param string $unLogin login 
- * @param string $unMdp mot de passe 
- * @return array tableau associatif ou booléen false 
- */
-function verifierInfosConnexionComptable($idCnx, $unLogin, $unMdp) {
-    $unLogin = filtrerChainePourBD($unLogin);
-    $unMdp = filtrerChainePourBD($unMdp);
-    // le mot de passe est crypté dans la base avec la fonction de hachage md5
-    $req = "select id, nom, prenom, login, mdp from comptable where login='".$unLogin."' and mdp='" . $unMdp . "'";
-    
+    $req = "select id, nom, prenom, login, mdp , idFonction from utilisateur where login='".$unLogin."' and mdp='" . $unMdp . "'"; //TODO: Je n'arrive plus a me connecter la base de donnee
     $idJeuRes = mysql_query($req, $idCnx);
     $ligne = false;
     if ( $idJeuRes ) {
