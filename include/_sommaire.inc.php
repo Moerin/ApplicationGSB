@@ -54,17 +54,10 @@
                     echo toStringErreurs($tabErreurs) ;   
                 }
                 
-          } else if ( $fonction == "comptable" ) { // si c'est un comptable on met l'affichage correspondant
+          } else if ( $fonction == "Comptable" ) { // si c'est un comptable on met l'affichage correspondant
         ?>
-        <ul id="menuList">
            <li class="smenu">
-              <a href="cAccueil.php" title="Page d'accueil">Accueil</a>
-           </li>
-           <li class="smenu">
-              <a href="cSeDeconnecter.php" title="Se déconnecter">Se déconnecter</a>
-           </li>
-           <li class="smenu">
-              <a href="cValiderFichesFrais.php" title="Saisie fiche de frais du mois courant">Valider fiche de frais</a>
+              <a href="cValidFichesFrais.php" title="Saisie fiche de frais du mois courant">Valider fiche de frais</a>
            </li>
            <li class="smenu">
               <a href="cSuiviePaiementFichesFrais.php" title="Consultation de mes fiches de frais">Suivre paiement fiches de frais</a>
