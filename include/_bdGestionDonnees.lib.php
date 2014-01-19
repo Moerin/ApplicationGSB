@@ -95,7 +95,9 @@ function obtenirDetailUtilisateur($idCnx, $unId) {
  * @return array  tableau associatif du utilisateur
  */
 function obtenirReqListeUtilisateur() {
-    $requete = "select id, nom from utilisateur where idFonction = 1 order by nom";
+    $requete = "SELECT distinct utilisateur.id, utilisateur.nom, utilisateur.prenom
+        from utilisateur join lignefraisforfait on utilisateur.id = idVisiteur
+        where idFonction = 1 order by nom";
     return $requete;
 }
 
@@ -135,7 +137,7 @@ function obtenirDetailFicheFrais($idCnx, $unMois, $unIdVisiteur) {
  */
 function existeFicheFrais($idCnx, $unMois, $unIdVisiteur) {
     $unMois = filtrerChainePourBD($unMois);
-    $requete = "select idVisiteur from FicheFrais where idVisiteur='" . $$unIdVisiteur . 
+    $requete = "select idVisiteur from FicheFrais where idVisiteur='" . $unIdVisiteur . 
               "' and mois='" . $unMois . "'";
     $idJeuRes = mysql_query($requete, $idCnx);  
     $ligne = false ;
