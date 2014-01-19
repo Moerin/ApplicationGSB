@@ -210,6 +210,16 @@ taille de caract�res l�g�rement sup�rieure � la normale */
    font-size : 1em;
 }
 
+#contenu .actions {
+    display:inline;
+    width : 95%;
+    white-space: nowrap;
+}
+
+#contenu .infosNonActualisees {
+    display: none;
+}
+
 /* Style pour les parties importantes de la page principale */
 #contenu strong {
   font-weight:bold;
@@ -229,7 +239,7 @@ taille de caract�res l�g�rement sup�rieure � la normale */
 #contenu th {  
    background-color:#77AADD;
    height:21px;
-   text-align:left;
+   text-align:center;
    vertical-align:top;
    font-weight:bold;
    border-bottom:0.1em solid #777777;
@@ -290,6 +300,29 @@ table.listeLegere th.libelle{
 }
 
 #contenu img {
-  height : 28px;
-  float : left;
+  height : 16px;
+  float : center;
+  padding: 10px;
+}
+
+/* Input des tableaux de cValidFrais.php */
+#tableF tr td input {
+    text-align: right;
+    width: 60px;
+}
+
+/* Cellule des tableaux de cValidFrais.php */
+#tableF tr td {
+    width: 80px;
+    text-align: center;
+}
+
+#tableHF tr td {
+    width: 120px;
+    text-align: center;
+}
+
+#tableHF #tdAction {
+    width: 80px;
+    text-align: center;
 }
