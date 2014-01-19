@@ -94,7 +94,7 @@ function obtenirDetailUtilisateur($idCnx, $unId) {
  * @param resource $idCnx identifiant de connexion
  * @return array  tableau associatif du utilisateur
  */
-function obtenirReqListeUtilisateur() {
+function obtenirReqListeUtilisateur() { // TODO: renommer de façon plus pertinante
     $requete = "SELECT distinct utilisateur.id, utilisateur.nom, utilisateur.prenom
         from utilisateur join lignefraisforfait on utilisateur.id = idVisiteur
         where idFonction = 1 order by nom";
