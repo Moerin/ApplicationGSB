@@ -17,8 +17,8 @@ function afficheMsgNbJustificatifs() {
 }
 function reinitialiserLigneFraisForfait() {
     document.getElementById('formFraisForfait').reset();
-    document.getElementById('msgFraisForfait').style.display = "none";
-    document.getElementById('actionsFraisForfait').style.display = "none";        
+//    document.getElementById('msgFraisForfait').style.display = "none";
+//    document.getElementById('actionsFraisForfait').style.display = "none";        
 }
 function reinitialiserLigneFraisHorsForfait(idElementHF) {
     document.getElementById('formFraisHorsForfait' + idElementHF).reset();
@@ -32,6 +32,18 @@ function reinitialiserNbJustificatifs() {
     document.getElementById('lkActualiserNbJustificatifs').style.display = "none";
     document.getElementById('lkReinitialiserNbJustificatifs').style.display = "none";
 }
+
+/**
+ * Fonction présent au chargement de la page qui permet de mettre les informations
+ * en cas changement de visiteur
+ * @returns {undefined}
+ */
+window.onload = function() {
+    document.getElementById("idLstVisiteur").onchange = function() {
+        document.getElementById('formChoixVisiteur').submit();
+    }
+} 
+
 function changerVisiteur(idVisiteur) {
     if(getModifsEnCours()) {
         if(confirm('Attention, des modifications n\'ont pas été actualisées. Souhaitez-vous vraiment changer de visiteur et perdre toutes les modifications non actualisées ?')) {
