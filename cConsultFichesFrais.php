@@ -47,8 +47,8 @@
         <label for="lstMois">Mois : </label>
         <select id="lstMois" name="lstMois" title="Sélectionnez le mois souhaité pour la fiche de frais">
             <?php
-                // on propose tous les mois pour lesquels le utilisateura une fiche de frais
-                $req = obtenirReqMoisFicheFrais(obtenirIdUserConnecte());
+                // on propose tous les mois pour lesquels l'utilisateur a une fiche de frais
+                $req = obtenirReqMoisFicheFraisCrée(obtenirIdUserConnecte());
                 $idJeuMois = mysql_query($req, $idConnexion);
                 $lgMois = mysql_fetch_assoc($idJeuMois);
                 while ( is_array($lgMois) ) {
