@@ -149,7 +149,7 @@ form {
 .corpsForm label{
   display: block;
   //text-align:right;
-  width:28%;
+  //width:28%;
   margin: 0;
   padding: 0 .5em 0 0;
   line-height: 1.8;	
@@ -250,9 +250,20 @@ taille de caract�res l�g�rement sup�rieure � la normale */
    border :1px solid #777777;
 }
 
+#contenu .tdLineThrough {
+    text-decoration: line-through;
+    background-color:gainsboro;
+}
+
 #contenu h3 {
     font-size : 1.2em;
 }
+
+#contenu #validInput {
+    float: right;
+    margin-bottom: 10px;
+}
+
 table.listeLegere {
 /*    width:80%;*/
     margin-bottom : 0.5em;
@@ -275,14 +286,17 @@ table.listeLegere td {
   vertical-align:top;
   font-weight:normal;
 }
-table.listeLegere th.eltForfait{
+table.listeLegere th.eltForfait {
   color:black;
 }
-table.listeLegere th.date, table.listeLegere th.montant{
+table.listeLegere th.date, table.listeLegere th.montant {
   width:15%;
   color:black;
 }
-table.listeLegere th.libelle{
+table.listeLegere td.qteForfait {
+    text-align:right;
+}
+table.listeLegere th.libelle {
   width:70%;
   color:black;
 }
@@ -302,7 +316,7 @@ table.listeLegere th.libelle{
 #contenu img {
   height : 16px;
   float : center;
-  padding: 10px;
+  padding: 5px;
 }
 
 /* Input des tableaux de cValidFrais.php */
@@ -325,4 +339,45 @@ table.listeLegere th.libelle{
 #tableHF #tdAction {
     width: 80px;
     text-align: center;
+}
+
+/* Style pour les tableaux de la fiche de suivie de paiement */
+
+#contenu .tabForfait {
+    border: 0 none;
+    min-width: 200px;
+    width: 95%;
+}
+
+#contenu .tabHF {
+    min-width: 200px;
+    width: 98%;
+    margin: 1px;
+}
+
+#contenu .tabForfait tr td{
+    border: 0 none;
+    padding: 3px;
+}
+
+#contenu .tabForfait tr , .tabHF tr , .alignDroite {
+    text-align: right;
+}
+
+#contenu .tabForfait tr , .tabHF tr , .alignGauche {
+    text-align: left;
+}
+
+#contenu .tabForfait tr , .tabHF tr , .alignCentre {
+    text-align: center;
+}
+
+#contenu .ecritureLargeGras {
+    font-size: 1em;
+    font-weight: bold;
+}
+
+#contenu #inputValiderFiche {
+    float:right;
+    clear:both;
 }
