@@ -12,20 +12,36 @@
   
   if ($etape=='validerConnexion') { // un client demande à s'authentifier
       
-      // acquisition des données envoyées, ici login et mot de passe
-      $login = lireDonneePost("txtLogin");
-      $mdp = lireDonneePost("txtMdp");
-      echo $mdp;
-      $mdp = crypt($mdp); // encode le mot de passe
-      echo $mdp;
-      $lgUser = verifierInfosConnexionUtilisateur($idConnexion, $login, $mdp) ;
-      // si l'id utilisateur a été trouvé, donc informations fournies sous forme de tableau
-      if ( is_array($lgUser) ) {
-          affecterInfosConnecte($lgUser["id"], $lgUser["login"], $lgUser["idFonction"]); // modification ajout du type d'utilisateur
-      } else {
-          ajouterErreur($tabErreurs, "Pseudo et/ou mot de passe incorrects");
-      }
-      
+    // acquisition des données envoyées, ici login et mot de passe
+    $login = lireDonneePost("txtLogin");
+    $mdp = lireDonneePost("txtMdp");
+    // Verifie si le mot de passe est deja hashé
+    $idJeuHash = mysql_query("select hash from utilisateur where login = '" . $login . "'");
+    
+    // recupère les éléments de la requète
+    if ( $idJeuHash ) {
+        $lgHash = mysql_fetch_row($idJeuHash);
+        mysql_free_result($idJeuHash);
+    }
+    /* Vérifie si le mot de passe est déja hashé 1 = oui, 0 = non
+     * Si le mot de passe n'est pas hashé on copie simplement la variable dans une variable qui sera
+     * passé dans les parametre de la fonction verifierInfosConnexionUtilisateur()
+     * Sinon on le hash et on le met dans une variable qui sera comparé au mot de passe hashé dans la
+     * base de donnée.
+     */
+    if ($lgHash[0] == 1) {
+        $hashed_mdp = crypt($mdp, '$2a$07$'.md5($mdp).'$');
+    } else {
+        $hashed_mdp = $mdp;
+    }
+    
+    $lgUser = verifierInfosConnexionUtilisateur($idConnexion, $login, $hashed_mdp) ;
+    // si l'id utilisateur a été trouvé, donc informations fournies sous forme de tableau
+    if ( is_array($lgUser) ) {
+        affecterInfosConnecte($lgUser["id"], $lgUser["login"], $lgUser["idFonction"]); // modification ajout du type d'utilisateur
+    } else {
+        ajouterErreur($tabErreurs, "Pseudo et/ou mot de passe incorrects");
+    }
   }
   if ( $etape == "validerConnexion" && nbErreurs($tabErreurs) == 0 ) {
         header("Location:cAccueil.php");
