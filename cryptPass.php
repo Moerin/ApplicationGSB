@@ -7,18 +7,43 @@
  */
 
 // Crypte les mot de passe à l'intérieur de la base de donnée
-
 $repInclude = './include/';
 require($repInclude . "_init.inc.php");
 
-$req = "select id, mdp from utilisateur";
+$req = "select id, mdp, hash from utilisateur";
 $idJeuMotDePasse = mysql_query($req, $idConnexion);
 
-while ($lgMdp = mysql_fetch_array($idJeuMotDePasse)) {
-   $truc = $lgMdp['mdp'];
-   $req2 = "UPDATE utilisateur SET mdp ='" . crypt($truc) . "' where id = '" . $lgMdp['id'] . "'";
-   mysql_query($req2, $idConnexion);
+// Variable de vérification d'encodage
+$hashedDatabase = false;
+$lgMdp = mysql_fetch_array($idJeuMotDePasse);
+if ($lgMdp['hash'] == 1) {
+       $hashedDatabase = true;
+} else {
+    $idJeuMotDePasse = mysql_query($req, $idConnexion);
+    while ($lgMdp = mysql_fetch_array($idJeuMotDePasse)) {
+   
+
+        $mdp = $lgMdp['mdp'];   
+        $req2 = "UPDATE utilisateur SET mdp ='" . crypt($mdp,'$2a$07$'.md5($mdp).'$') . "', hash=1 where id = '" . $lgMdp['id'] . "'";
+        $reqSuccess = mysql_query($req2, $idConnexion);
+        if ($reqSuccess) {
+            echo '<br \>Requête valide';
+            echo '<br \> Mot de passe en clair : ' . $lgMdp['mdp']; 
+            echo '<br \> Mot de passe crypté : ' . crypt($mdp,'$2a$07$'.md5($mdp).'$'); 
+
+        } else {
+         $message  = 'Requête invalide : ' . mysql_error() . "\n";
+         $message .= 'Requête complète : ' . $query;
+         die($message);
+         }
+    }
 }
  mysql_free_result($idJeuMotDePasse);
 
+ // si la base de donnée est déja crypté on propose de la réinitialiser
+ if ($hashedDatabase) { 
+    ?><p>Base de donnée déja encodée, pour voir les résultat encodées vous pouvez la réinitialiser en cliquant sur le lien suivant.</p><br />
+    <a href="resetDatabase.php" title="reinitialisation">Reinitialiser base de donnée</a><?php
+ }
+ 
 ?>
