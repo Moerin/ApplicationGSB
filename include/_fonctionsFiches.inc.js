@@ -60,7 +60,7 @@ function afficheMsgNbJustificatifs() {
  * @param char(3) km nombre de kilomètres
  * @return void
  */
-function actualiserLigneFraisForfait(rep,nui,etp,km) {
+function actualiserLigneFraisForfait(rep,nui,etp,km4d,km4e,km56d,km56e) {
     // Trouver quelles sont les mises à jour à réaliser
     var modif = false;
     var txtModifs = '';
@@ -79,10 +79,25 @@ function actualiserLigneFraisForfait(rep,nui,etp,km) {
         modif = true;
         txtModifs += '\n\nAncienne quantité d\'étapes : ' + etp + ' \n \'--> Nouvelle quantité : ' + document.getElementById('idETP').value;
     }
-    if (km != document.getElementById('idKM').value) {
+    if (km4d != document.getElementById('idKM4d').value) {
         // Modification portant sur la date
         modif = true;
-        txtModifs += '\n\nAncienne quantité de kilomètres : ' + km + ' \n \'--> Nouvelle quantité : ' + document.getElementById('idKM').value;
+        txtModifs += '\n\nAncienne quantité de kilomètres : ' + km4d + ' \n \'--> Nouvelle quantité : ' + document.getElementById('idKM4d').value;
+    }
+    if (km4e != document.getElementById('idKM4e').value) {
+        // Modification portant sur la date
+        modif = true;
+        txtModifs += '\n\nAncienne quantité de kilomètres : ' + km4e + ' \n \'--> Nouvelle quantité : ' + document.getElementById('idKM4e').value;
+    }
+    if (km56d != document.getElementById('idKM56d').value) {
+        // Modification portant sur la date
+        modif = true;
+        txtModifs += '\n\nAncienne quantité de kilomètres : ' + km56d + ' \n \'--> Nouvelle quantité : ' + document.getElementById('idKM56d').value;
+    }
+    if (km56e != document.getElementById('idKM56e').value) {
+        // Modification portant sur la date
+        modif = true;
+        txtModifs += '\n\nAncienne quantité de kilomètres : ' + km56e + ' \n \'--> Nouvelle quantité : ' + document.getElementById('idKM56e').value;
     }
     if (modif) {
         var question = 'Souhaitez-vous vraiment effectuer la ou les modifications suivantes cette ligne de frais forfaitisés ?' + txtModifs;
