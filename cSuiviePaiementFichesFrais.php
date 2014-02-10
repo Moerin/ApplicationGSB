@@ -28,6 +28,9 @@ $lgVisiteur = obtenirDetailUtilisateur($idConnexion, $visiteurChoisi);
 $libelleMois = "";
 $etatFiche = "";
 
+// -- variable sur les éléments forfaitisés --
+$kmTotal = 0;
+
 // -- variable sur les éléments hors forfait --
 $libelleFraisHorsForfait = "";
 $montantFraisHorsForfait = "";
@@ -169,8 +172,14 @@ if ($etapeChoisi == "choixVisiteur") {
     while(is_array($lgEltsForfait)) {
         if ($lgEltsForfait["idFraisForfait"] == "ETP") {
             $etp = $lgEltsForfait["quantite"];
-        } elseif ($lgEltsForfait["idFraisForfait"] == "KM") {
-            $km = $lgEltsForfait["quantite"];
+        } elseif ($lgEltsForfait["idFraisForfait"] == "KM4d") {
+            $km4d = $lgEltsForfait["quantite"];
+        } elseif ($lgEltsForfait["idFraisForfait"] == "KM4e") {
+            $km4e = $lgEltsForfait["quantite"];
+        } elseif ($lgEltsForfait["idFraisForfait"] == "KM56d") {
+            $km56d = $lgEltsForfait["quantite"];
+        } elseif ($lgEltsForfait["idFraisForfait"] == "KM56e") {
+            $km56e = $lgEltsForfait["quantite"];
         } elseif ($lgEltsForfait["idFraisForfait"] == "NUI") {
             $nui = $lgEltsForfait["quantite"]; 
         } else {
@@ -196,23 +205,23 @@ if ($etapeChoisi == "choixVisiteur") {
                </tr>
                <tr>
                    <td class="alignGauche"> * Frais Kilométrique (Véhicule 4CV Diesel) : </td>
-                   <td> <?php echo $km; ?> x 0.52 € = </td>
-                   <td class="alignDroite"> <?php $kmTotal = $km * 0.52; echo $kmTotal; ?> € </td>
+                   <td> <?php echo $km4d; ?> x 0.52 € = </td>
+                   <td class="alignDroite"> <?php $montantKm4d = $km4d * 0.52; echo $montantKm4d; ?> € </td>
                </tr>
                <tr>
                    <td class="alignGauche"> * Frais Kilométrique (Véhicule 4CV Essence) : </td>
-                   <td> <?php echo $km; ?> x 0.62 € = </td>
-                   <td class="alignDroite"> <?php $kmTotal = $km * 0.62; echo $kmTotal; ?> € </td>
+                   <td> <?php echo $km4e; ?> x 0.62 € = </td>
+                   <td class="alignDroite"> <?php $montantKm4e = $km4e * 0.62; echo $montantKm4e; ?> € </td>
                </tr>
                <tr>
                    <td class="alignGauche"> * Frais Kilométrique (Véhicule 5-6CV Diesel) : </td>
-                   <td> <?php echo $km; ?> x 0.58 € = </td>
-                   <td class="alignDroite"> <?php $kmTotal = $km * 0.58; echo $kmTotal; ?> € </td>
+                   <td> <?php echo $km56d; ?> x 0.58 € = </td>
+                   <td class="alignDroite"> <?php $montantKm56d = $km56d * 0.58; echo $montantKm56d; ?> € </td>
                </tr>
                <tr>
                    <td class="alignGauche"> * Frais Kilométrique (Véhicule 5-6CV Essence) : </td>
-                   <td> <?php echo $km; ?> x 0.67 € = </td>
-                   <td class="alignDroite"> <?php $kmTotal = $km * 0.67; echo $kmTotal; ?> € </td>
+                   <td> <?php echo $km56e; ?> x 0.67 € = </td>
+                   <td class="alignDroite"> <?php $montantKm56e = $km56e * 0.67; echo $montantKm56e; ?> € </td>
                </tr>
                <tr>
                    <td class="alignGauche"> * Nuitée Hôtel : </td>
@@ -226,7 +235,8 @@ if ($etapeChoisi == "choixVisiteur") {
                </tr>
                <tr>
                    <td class="alignGauche ecritureLargeGras" colspan="2"> TOTAL DES ELEMENTS FORFAITISES :  </td>
-                   <td class="alignDroite ecritureLargeGras"> <?php echo ($etpTotal + $kmTotal + $nuiTotal + $repTotal ); ?> € </td>
+                   <td class="alignDroite ecritureLargeGras"> <?php echo ($etpTotal + $montantKm4d + $montantKm4e 
+                       + $montantKm56d  + $montantKm56e + $nuiTotal + $repTotal ); ?> € </td>
                </tr>
            </tbody>
        </table>
