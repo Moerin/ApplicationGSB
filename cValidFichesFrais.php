@@ -27,16 +27,22 @@ $etapeChoisi = lireDonnee("etape");
 $tabQteEltsForfait = lireDonneePost("txtEltsForfait", "");
 $tabQteEltsHorsForfait = lireDonneePost("txtEltsHorsForfait", "");
 $nbJustificatifs = lireDonneePost("nbJustificatifs", "");
+$montantTotalElts = lireDonneePost("lstMontantEF", "");
+$montantTotalElts += lireDonneePost("lstMontantHF", "");
 $lgVisiteur = obtenirDetailUtilisateur($idConnexion, $visiteurChoisi);
 
 // Declaration des variables
 // variable d'information sur la fiche et l'utilisateur
 $libelleMois = "";
 
+// variable sur les éléments forfaitisés
+$montantElementForfaitise = 0.0;
+
 // variable sur les éléments hors forfait
 $libelleFraisHorsForfait = "";
 $montantFraisHorsForfait = "";
 $dateFraisHorsForfait = "";
+$montantFraisHorsForfaitTotal = 0.0;
 
 // actions sur les difféntes étapes du cas d'utilisation
 if ($etapeChoisi == "choixVisiteur") {
@@ -90,7 +96,7 @@ if ($etapeChoisi == "choixVisiteur") {
         <?php
     }
 } elseif ($etapeChoisi == "validerFiche") {
-    modifierEtatFicheFrais($idConnexion, $moisChoisi, $visiteurChoisi, "VA");
+    modifierEtatFicheFrais($idConnexion, $moisChoisi, $visiteurChoisi, $montantTotalElts, "VA");
     ?>
     <p class="info">La fiche de frais du visiteur <?php echo $lgVisiteur['prenom'] . " " . $lgVisiteur['nom']; ?> 
         pour <?php echo obtenirLibelleMois(intval(substr($moisChoisi, 4, 2))) . " " . intval(substr($moisChoisi, 0, 4)); ?> 
@@ -209,36 +215,58 @@ if ($etapeChoisi == "choixVisiteur") {
             <input type="hidden" name="etape" value="actualiserFraisForfait" />
             <input type="hidden" name="lstVisiteur" value="<?php echo $visiteurChoisi; ?>" />
             <input type="hidden" name="lstMois" value="<?php echo $moisChoisi; ?>" />
+            <input type="hidden" name="lstMontantEF" value="<?php echo $montantElementForfaitise; ?>" />
         </p>
         <table id="tableF">
             <tr>
-                <th>Repas midi</th><th>Nuitée</th><th>Etape</th><th>Km</th><th>Action</th>
+                <th>Repas midi</th><th>Nuitée</th><th>Etape</th>
+                <th>Véhicule 4CV Diesel</th>
+                <th>Véhicule 4CV Essence</th>
+                <th>Véhicule 5/6CV Diesel</th>
+                <th>Véhicule 5/6CV Essence</th>
+                <th>Action</th>
             </tr>    
             <tr>
                 <?php
-                // Les valeurs sont affectés en fonction de le clef du tableau associatif
+                // Les valeurs sont affectées en fonction de la clef du tableau associatif
                 while(is_array($lgEltsForfait)) {
                     if ($lgEltsForfait["idFraisForfait"] == "ETP") {
                         $etp = $lgEltsForfait["quantite"];
-                    } elseif ($lgEltsForfait["idFraisForfait"] == "KM") {
-                        $km = $lgEltsForfait["quantite"];
+                        $montantElementForfaitise += $etp * $lgEltsForfait["montant"];
+                    } elseif ($lgEltsForfait["idFraisForfait"] == "KM4d") {
+                        $km4d = $lgEltsForfait["quantite"];
+                        $montantElementForfaitise += $km4d * $lgEltsForfait["montant"];
                     } elseif ($lgEltsForfait["idFraisForfait"] == "NUI") {
-                        $nui = $lgEltsForfait["quantite"]; 
-                    } else {
+                        $nui = $lgEltsForfait["quantite"];
+                        $montantElementForfaitise += $nui * $lgEltsForfait["montant"];
+                    } elseif ($lgEltsForfait["idFraisForfait"] == "REP") {
                         $rep = $lgEltsForfait["quantite"];
+                        $montantElementForfaitise += $rep * $lgEltsForfait["montant"];
+                     } elseif ($lgEltsForfait["idFraisForfait"] == "KM4e") {
+                        $km4e = $lgEltsForfait["quantite"];
+                        $montantElementForfaitise += $km4e * $lgEltsForfait["montant"];
+                    } elseif ($lgEltsForfait["idFraisForfait"] == "KM56d") {
+                        $km56d = $lgEltsForfait["quantite"];
+                        $montantElementForfaitise += $km56d * $lgEltsForfait["montant"];
+                    }else {
+                        $km56e = $lgEltsForfait["quantite"];
+                        $montantElementForfaitise += $km56e * $lgEltsForfait["montant"];
                     }
                     $lgEltsForfait = mysql_fetch_assoc($idJeuForfait);
                 }
                 ?>
                 <td><input type="text" id="idETP" name="txtEltsForfait[ETP]" value="<?php echo $etp; ?>" /></td>
-                <td><input type="text" id="idKM" name="txtEltsForfait[KM]" value="<?php echo $km; ?>" </td>
+                <td><input type="text" id="idKM4d" name="txtEltsForfait[KM4d]" value="<?php echo $km4d; ?>" </td>
+                <td><input type="text" id="idKM4e" name="txtEltsForfait[KM4e]" value="<?php echo $km4e; ?>" </td>
+                <td><input type="text" id="idKM56d" name="txtEltsForfait[KM56d]" value="<?php echo $km56d; ?>" </td>
+                <td><input type="text" id="idKM56e" name="txtEltsForfait[KM56e]" value="<?php echo $km56e; ?>" </td>
                 <td><input type="text" id="idNUI" name="txtEltsForfait[NUI]" value="<?php echo $nui; ?>" </td>
                 <td><input type="text" id="idREP" name="txtEltsForfait[REP]" value="<?php echo $rep; ?>" /></td>
                 <td>
                     <div id="actionsFraisForfait" class="actions">
                            <img src="images/actualiserIcon.png" id="lkActualiserLigneFraisForfait" class="icon"
                            alt="icone Actualiser"  onclick="actualiserLigneFraisForfait(<?php echo $rep; ?>,
-                           <?php echo $nui; ?>,<?php echo $etp; ?>,<?php echo $km; ?>);"  title="Actualiser la ligne de frais forfaitisé" />
+                           <?php echo $nui; ?>,<?php echo $etp; ?>,<?php echo $km4d; ?>,<?php echo $km4e; ?>,<?php echo $km56d; ?>,<?php echo $km56e; ?>);"  title="Actualiser la ligne de frais forfaitisé" />
                            <img src="images/reinitialiserIcon.png" id="lkReinitialiserLigneFraisForfait" class="icon"
                            alt="icone Réinitialiser" onclick="reinitialiserLigneFraisForfait();" title="Rénitialiser la ligne de frais forfaitisé" />
                     </div>
@@ -248,6 +276,8 @@ if ($etapeChoisi == "choixVisiteur") {
                 ?>
             </tr>
         </table>
+
+        <p>MONTANT TOTAL FRAIS FORFAITISE : <?php echo $montantElementForfaitise ?></p>
     </form>
     <div id="msgFraisForfait" class="infosNonActualisees">
         Attention, les modifications doivent être actualisées pour être réellement prises en compte...
@@ -261,12 +291,14 @@ if ($etapeChoisi == "choixVisiteur") {
     ?>
         <?php
         while(is_array($lgEltsHorsForfait)) {
+            $montantFraisHorsForfaitTotal += $lgEltsHorsForfait["montant"];
         ?>
     <form id="formFraisHorsForfait<?php echo $lgEltsHorsForfait['id'];?>" method="post" action="" >
         <p>
             <input type="hidden" id="idEtape<?php echo $lgEltsHorsForfait['id']; ?>" name="etape" value="actualiserFraisHorsForfait"/>
             <input type="hidden" name="lstVisiteur" value="<?php echo $visiteurChoisi; ?>" />
             <input type="hidden" name="lstMois" value="<?php echo $moisChoisi; ?>" />
+            <input type="hidden" name="lstMontantHF" value="<?php echo $montantFraisHorsForfaitTotal; ?>" />
             <input input type="hidden" name="txtEltsHorsForfait[id]" value="<?php echo $lgEltsHorsForfait['id']; ?>" />
         </p>
         <table id="tableHF">
@@ -329,6 +361,7 @@ if ($etapeChoisi == "choixVisiteur") {
                 </td>
             </tr>
         </table>
+        <p>MONTANT TOTAL FRAIS HORS FORFAIT : <?php echo $montantFraisHorsForfaitTotal ?></p>
     </form>
     <div id="msgFraisHorsForfait<?php echo $lgEltsHorsForfait['id']; ?>" class="infosNonActualisees">
         Attention, les modifications doivent être actualisées pour être réellement prises en compte...</div>
@@ -372,6 +405,8 @@ if ($etapeChoisi == "choixVisiteur") {
             <input type="hidden" name="etape" value="validerFiche" />
             <input type="hidden" name="lstVisiteur" value="<?php echo $visiteurChoisi; ?>" />
             <input type="hidden" name="lstMois" value="<?php echo $moisChoisi; ?>" />
+            <input type="hidden" name="lstMontantEF" value="<?php echo $montantElementForfaitise; ?>" />
+            <input type="hidden" name="lstMontantHF" value="<?php echo $montantFraisHorsForfaitTotal; ?>" />
         <p>
             <input id="validInput" class="zone" type="button" 
                    onclick="validerFiche();" value="Valider cette fiche" />
