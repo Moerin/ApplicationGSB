@@ -247,7 +247,7 @@ function ajouterFicheFrais($idCnx, $unMois, $unIdVisiteur) {
  */                                                 
 function obtenirReqMoisFicheFraisCrée($unIdVisiteur) {
     $req = "select fichefrais.mois as mois from  fichefrais where fichefrais.idvisiteur ='"
-        . $unIdVisiteur . "' and idEtat ='CR' order by fichefrais.mois desc ";
+        . $unIdVisiteur . "' order by fichefrais.mois desc ";
     return $req ;
 }  
 
@@ -295,7 +295,7 @@ function obtenirReqMoisFicheFraisValidée($unIdVisiteur) {
  */                                                 
 function obtenirReqEltsForfaitFicheFrais($unMois, $unIdVisiteur) {
     $unMois = filtrerChainePourBD($unMois);
-    $requete = "select idFraisForfait, libelle, quantite from LigneFraisForfait
+    $requete = "select idFraisForfait, libelle, quantite, montant from LigneFraisForfait
               inner join FraisForfait on FraisForfait.id = LigneFraisForfait.idFraisForfait
               where idVisiteur='" . $unIdVisiteur . "' and mois='" . $unMois . "'";
     return $requete;
@@ -468,9 +468,8 @@ function verifierInfosConnexionUtilisateur($idCnx, $unLogin, $unMdp) {
  * @return void 
  */
 function modifierJustificatifFicheFrais($idCnx, $unMois, $unIdVisiteur, $desJustificatifs) {
-    $requete = "update FicheFrais set nbJustificatifs = '" . $desJustificatifs . 
-               "', where idVisiteur ='" .
-               $unIdVisiteur . "' and mois = '". $unMois . "'";
+    $requete = "update fichefrais set nbJustificatifs=" . $desJustificatifs . " where idVisiteur='" . $unIdVisiteur ."' 
+    and mois='". $unMois . "';";
     mysql_query($requete, $idCnx);
 }
 
@@ -485,9 +484,9 @@ function modifierJustificatifFicheFrais($idCnx, $unMois, $unIdVisiteur, $desJust
  * @param string $unMois mois sous la forme aaaamm
  * @return void 
  */
-function modifierEtatFicheFrais($idCnx, $unMois, $unIdVisiteur, $unEtat) {
-    $requete = "update FicheFrais set idEtat = '" . $unEtat . 
-               "', dateModif = CURDATE() where idVisiteur ='" .
+function modifierEtatFicheFrais($idCnx, $unMois, $unIdVisiteur, $unMontant, $unEtat) {
+    $requete = "update fichefrais set idEtat = '" . $unEtat . 
+               "', dateModif = CURDATE(), montantValide= '" . $unMontant . "' where idVisiteur ='" .
                $unIdVisiteur . "' and mois = '". $unMois . "'";
     mysql_query($requete, $idCnx);
 }
