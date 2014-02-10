@@ -87,9 +87,26 @@
     <h3>Fiche de frais du mois de <?php echo obtenirLibelleMois(intval(substr($moisSaisi,4,2))) . " " . substr($moisSaisi,0,4); ?> : 
     <em><?php echo $tabFicheFrais["libelleEtat"]; ?> </em>
     depuis le <em><?php echo $tabFicheFrais["dateModif"]; ?></em></h3>
+      
+    <form id="formCréerPDF" method="post" action="cCreerPDF.php">
+        <input type="hidden" name="idVisiteur" value="<?php echo obtenirIdUserConnecte(); ?>" />
+        <input type="hidden" name="idMois" value="<?php echo $moisSaisi; ?>" />
+        <img src="images/pdfIcon.png" id="lkCreerFicheFraisPdf" class="icon"
+             alt="Creer PDF" onclick="document.getElementById('formCréerPDF').submit();"/>
+        <a style="cursor:pointer;" 
+           onclick="document.getElementById('formCréerPDF').submit();">Exporter au format PDF </a>
+    </form>
+
+
     <div class="encadre">
-    <p>Montant validé : <?php echo $tabFicheFrais["montantValide"] ;
-        ?>              
+        <p>&nbsp;&nbsp;Montant validé : 
+    <?php 
+    if ($tabFicheFrais["montantValide"] == NULL) {
+        echo "Aucun";
+    } else {
+        echo $tabFicheFrais["montantValide"] ;
+    }
+    ?>
     </p>
 <?php          
             // demande de la requête pour obtenir la liste des éléments 
@@ -113,7 +130,7 @@
   	   <caption>Quantités des éléments forfaitisés</caption>
         <tr>
             <?php
-            // premier parcours du tableau des frais forfaitisés du utilisateurconnecté
+            // premier parcours du tableau des frais forfaitisés de l'utilisateur connecté
             // pour afficher la ligne des libellés des frais forfaitisés
             foreach ( $tabEltsFraisForfait as $unLibelle => $uneQuantite ) {
             ?>
@@ -124,7 +141,7 @@
         </tr>
         <tr>
             <?php
-            // second parcours du tableau des frais forfaitisés du utilisateur connecté
+            // second parcours du tableau des frais forfaitisés de l'utilisateur connecté
             // pour afficher la ligne des quantités des frais forfaitisés
             foreach ( $tabEltsFraisForfait as $unLibelle => $uneQuantite ) {
             ?>
