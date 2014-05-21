@@ -192,8 +192,8 @@ function refuseLigneFraisHorsForfait(idElementHF) {
         alert("La ligne est déja refusé");
     } else {    
         message = 'Souhaitez-vous vraiment supprimer la ligne de frais hors forfait du ' + document.getElementById('idDate' + idElementHF).value ;
-        question += ' portant le libellé "' + document.getElementById('idLibelle' + idElementHF).value + '"';
-        question += ' pour un montant de ' + document.getElementById('idMontant' + idElementHF).value + '\u20AC ?';
+        message += ' portant le libellé "' + document.getElementById('idLibelle' + idElementHF).value + '"';
+        message += ' pour un montant de ' + document.getElementById('idMontant' + idElementHF).value + '\u20AC ?';
         if (confirm(message)) {
             // On ajoute en début de libelle le texte "REFUSÉ : "
             document.getElementById('idLibelle' + idElementHF).value = 'REFUSÉ : ' + document.getElementById('idLibelle' + idElementHF).value;

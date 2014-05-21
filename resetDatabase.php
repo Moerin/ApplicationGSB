@@ -11,9 +11,15 @@
 $repInclude = './include/';
 require($repInclude . "_init.inc.php");
 
-// Efface les tables de la base données
-$mysqli = new mysqli("localhost", "userGsb", "secret", "gsb_frais");
+// Connexion à la BDD en PDO
+$dsn = 'mysql:host=localhost;dbname=moerin_database';
+$user = 'moerin_gsb';
+$password = '#5y?{7SSl+5.';
+
+//// Efface les tables de la base données
+$mysqli = new mysqli("localhost", "moerin_gsb", "#5y?{7SSl+5.", "moerin_database");
 $mysqli->query('SET foreign_key_checks = 0');
+
 if ($result = $mysqli->query("SHOW TABLES"))
 {
     while($row = $result->fetch_array(MYSQLI_NUM))
@@ -26,7 +32,7 @@ $mysqli->query('SET foreign_key_checks = 1');
 $mysqli->close();
 
 // Nom du fichier conteant le script de creation de la base de donnée
-$filename = 'test.sql';
+$filename = 'database_final_state.sql';
 
 $templine = '';
 // Lecture du fichier

@@ -117,7 +117,7 @@ if ($etapeChoisi == "choixVisiteur") {
         <p>
             <input type="hidden" name="etape" value="choixVisiteur" />
             <label class="title">Choisir le visiteur :</label>
-            <select name="lstVisiteur" id="idLstVisiteur" class="zone" >
+            <select name="lstVisiteur" id="idLstVisiteur" class="zone" onchange="this.form.submit();" >
                 <?php
                 // Dans le cas où aucun visiteur n'a été choisi on le signifie dans le sélection de liste
                 if ( $visiteurChoisi == "") {
@@ -208,7 +208,7 @@ if ($etapeChoisi == "choixVisiteur") {
     <?php
     $req = obtenirReqEltsForfaitFicheFrais($moisChoisi, $visiteurChoisi);
     $idJeuForfait = mysql_query($req, $idConnexion);
-    $lgEltsForfait = mysql_fetch_assoc($idJeuForfait);
+    $lgEltsForfait = mysql_fetch_assoc($idJeuForfait) or die(mysql_error());
     ?>
     <form id="formFraisForfait" method="post" action="" >
         <p>
@@ -219,11 +219,13 @@ if ($etapeChoisi == "choixVisiteur") {
         </p>
         <table id="tableF">
             <tr>
-                <th>Repas midi</th><th>Nuitée</th><th>Etape</th>
+                <th>Etape</th>
                 <th>Véhicule 4CV Diesel</th>
                 <th>Véhicule 4CV Essence</th>
                 <th>Véhicule 5/6CV Diesel</th>
                 <th>Véhicule 5/6CV Essence</th>
+                <th>Nuitée</th>
+                <th>Repas midi</th>
                 <th>Action</th>
             </tr>    
             <tr>
@@ -282,17 +284,18 @@ if ($etapeChoisi == "choixVisiteur") {
     <div id="msgFraisForfait" class="infosNonActualisees">
         Attention, les modifications doivent être actualisées pour être réellement prises en compte...
     </div>
+    
     <h2>Hors forfait</h2>
     <?php
     // On récupére les lignes hors forfait pour le traitement
     $req = obtenirReqEltsHorsForfaitFicheFrais($moisChoisi, $visiteurChoisi);
-    $idJeuHorsForfait = mysql_query($req, $idConnexion);
+    $idJeuHorsForfait = mysql_query($req, $idConnexion) or die(mysql_error());
     $lgEltsHorsForfait = mysql_fetch_assoc($idJeuHorsForfait);
+      
+    do
+    {
+        $montantFraisHorsForfaitTotal += $lgEltsHorsForfait["montant"];
     ?>
-        <?php
-        while(is_array($lgEltsHorsForfait)) {
-            $montantFraisHorsForfaitTotal += $lgEltsHorsForfait["montant"];
-        ?>
     <form id="formFraisHorsForfait<?php echo $lgEltsHorsForfait['id'];?>" method="post" action="" >
         <p>
             <input type="hidden" id="idEtape<?php echo $lgEltsHorsForfait['id']; ?>" name="etape" value="actualiserFraisHorsForfait"/>
@@ -306,8 +309,10 @@ if ($etapeChoisi == "choixVisiteur") {
                 <th>Date</th><th>Libellé</th><th>Montant</th><th>Action</th>
             </tr>
             <tr>
-                <td><input id="idDate<?php echo $lgEltsHorsForfait["id"]?>" name="txtEltsHorsForfait[date]" value="<?php echo convertirDateAnglaisVersFrancais($lgEltsHorsForfait["date"]); ?>" /></td>
-                <td >
+                <td>
+                    <input id="idDate<?php echo $lgEltsHorsForfait["id"]?>" name="txtEltsHorsForfait[date]" value="<?php echo convertirDateAnglaisVersFrancais($lgEltsHorsForfait["date"]); ?>" />
+                </td>
+                <td>
                 <?php
                 // Si le libelle REFUSÉ : est présent on barre le texte sinon on l'affiche normalement
                 if (strpos($lgEltsHorsForfait["libelle"], "REFUSÉ : ") === false) {
@@ -335,9 +340,9 @@ if ($etapeChoisi == "choixVisiteur") {
                                    '<?php echo filtrerChainePourNavig($lgEltsHorsForfait["libelle"]); ?>',
                                    '<?php echo $lgEltsHorsForfait["montant"]; ?>')"
                             title="Actualiser la ligne hors forfait"  title="Actualiser la ligne de frais hors forfait" />
-                        <img src="images/reinitialiserIcon.png" id="lkReinitialiserLigneFraisHF" class="icon"
+                        <!--<img src="images/reinitialiserIcon.png" id="lkReinitialiserLigneFraisHF" class="icon"
                             alt="icone Réinitialiser" onclick="reinitialiserLigneFraisHorsForfait('<?php echo $lgEltsHorsForfait['id']; ?>');" 
-                            title="Rénitialiser la ligne hors forfait" />
+                            title="Rénitialiser la ligne hors forfait" />-->
                             <?php
                             // L'option "Supprimer" n'est proposée que si les frais n'ont pas déjà été refusés
                             if (strpos($lgEltsHorsForfait['libelle'], 'REFUSÉ : ') === false) {
@@ -361,16 +366,16 @@ if ($etapeChoisi == "choixVisiteur") {
                 </td>
             </tr>
         </table>
-        <p>MONTANT TOTAL FRAIS HORS FORFAIT : <?php echo $montantFraisHorsForfaitTotal ?></p>
     </form>
     <div id="msgFraisHorsForfait<?php echo $lgEltsHorsForfait['id']; ?>" class="infosNonActualisees">
         Attention, les modifications doivent être actualisées pour être réellement prises en compte...</div>
         <?php
             $lgEltsHorsForfait = mysql_fetch_assoc($idJeuHorsForfait);
-        }
-        //mysql_free_result($idJeuHorsForfait)
-     // Form d'actualisation du nombre de justificatif  
+        }while(is_array($lgEltsHorsForfait));
+        mysql_free_result($idJeuHorsForfait)
+    // Form d'actualisation du nombre de justificatif  
     ?>
+    <p>MONTANT TOTAL FRAIS HORS FORFAIT : <?php echo $montantFraisHorsForfaitTotal ?></p>
     <form id="formNbJustificatifs" method="post" action="">
         <p>
             <input type="hidden" name="etape" value="actualiserNbJustificatifs" />
@@ -398,7 +403,7 @@ if ($etapeChoisi == "choixVisiteur") {
             </div>
         </div>
     </form>
-     <div id="msgNbJustificatifs" class="infosNonActualisees">
+    <div id="msgNbJustificatifs" class="infosNonActualisees">
          Attention, le nombre de justificatifs doit être actualisé pour être réellement pris en compte...</div>
     <form id="formValidFiche" method="post" action="">
         <p>

@@ -19,7 +19,7 @@ ul#answers li {margin-top:1.8em}
 <li><b>4.</b> <a href='#q4'>Je n'arrive pas à faire de retour à la ligne. J'ai bien mis \n dans la chaîne imprimée par MultiCell mais ça ne marche pas.</a></li>
 <li><b>5.</b> <a href='#q5'>J'essaie d'afficher une variable dans la méthode Header mais rien ne s'imprime.</a></li>
 <li><b>6.</b> <a href='#q6'>J'ai défini les méthodes Header et Footer dans ma classe PDF mais rien ne s'affiche.</a></li>
-<li><b>7.</b> <a href='#q7'>Les caractères accentués sont remplacés par des caractères bizarres, par exemple Ã©.</a></li>
+<li><b>7.</b> <a href='#q7'>Les caractères accentués sont remplacés par des caractères bizarres, par exemple é.</a></li>
 <li><b>8.</b> <a href='#q8'>J'essaie de mettre le caractère euro mais je n'y arrive pas.</a></li>
 <li><b>9.</b> <a href='#q9'>J'ai l'erreur suivante quand j'essaie de générer un PDF : Some data has already been output, can't send PDF file</a></li>
 <li><b>10.</b> <a href='#q10'>Je dessine un cadre avec des dimensions très précises, mais à l'impression je constate des écarts.</a></li>
@@ -155,7 +155,7 @@ Il faut créer un objet de la classe PDF et non pas FPDF :
 </li>
 
 <li id='q7'>
-<p><b>7.</b> <span class='question'>Les caractères accentués sont remplacés par des caractères bizarres, par exemple Ã©.</span></p>
+<p><b>7.</b> <span class='question'>Les caractères accentués sont remplacés par des caractères bizarres, par exemple é.</span></p>
 Il ne faut pas utiliser l'encodage UTF-8. Les polices standard de FPDF utilisent l'ISO-8859-1 ou Windows-1252.
 On peut effectuer une conversion en ISO-8859-1 grâce à utf8_decode() :
 <div class="doc-source">

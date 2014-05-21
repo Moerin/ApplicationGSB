@@ -17,12 +17,12 @@
     $mdp = lireDonneePost("txtMdp");
     // Verifie si le mot de passe est deja hashé
     $idJeuHash = mysql_query("select hash from utilisateur where login = '" . $login . "'");
-    
     // recupère les éléments de la requète
     if ( $idJeuHash ) {
         $lgHash = mysql_fetch_row($idJeuHash);
         mysql_free_result($idJeuHash);
     }
+    
     /* Vérifie si le mot de passe est déja hashé 1 = oui, 0 = non
      * Si le mot de passe n'est pas hashé on copie simplement la variable dans une variable qui sera
      * passé dans les parametre de la fonction verifierInfosConnexionUtilisateur()

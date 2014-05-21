@@ -4,9 +4,10 @@
  * @package default
  * @todo  RAS
  */
+  //TODO REPARER CETTE PARTIE, LE SERVEUR DISTANT NE TROUVE PAS LA TABLE FICHEFRAIS
+   // ET NE CREE PAS DE NOUVELLE FICHEFRAIS C'EST POUR CELA QUE LA PAGE RESTE VIDE
   $repInclude = './include/';
   require($repInclude . "_init.inc.php");
-
   // page inaccessible si utilisateur non connecté
   if (!estUtilisateurConnecte()) {
       header("Location: cSeConnecter.php");  
@@ -15,7 +16,7 @@
   require($repInclude . "_sommaire.inc.php");
   // affectation du mois courant pour la saisie des fiches de frais
   $mois = sprintf("%04d%02d", date("Y"), date("m"));
-  // vérification de l'existence de la fiche de frais pour ce mois courant
+  // vérification de l'existence de la fiche de frais pour le mois courant
   $existeFicheFrais = existeFicheFrais($idConnexion, $mois, obtenirIdUserConnecte());
   // si elle n'existe pas, on la crée avec les élets frais forfaitisés à 0
   if ( !$existeFicheFrais ) {
@@ -31,7 +32,7 @@
   $dateHF = lireDonnee("txtDateHF", "");
   $libelleHF = lireDonnee("txtLibelleHF", "");
   $montantHF = lireDonnee("txtMontantHF", "");
- 
+
   // structure de décision sur les différentes étapes du cas d'utilisation
   if ($etape == "validerSaisie") { 
       // l'utilisateur valide les éléments forfaitisés         
@@ -55,8 +56,9 @@
       }
   }
   else { // on ne fait rien, étape non prévue 
-  
-  }                                  
+
+  }
+ 
 ?>
   <!-- Division principale -->
   <div id="contenu">
@@ -77,15 +79,21 @@
       <div class="corpsForm">
           <input type="hidden" name="etape" value="validerSaisie" />
           <fieldset>
-            <legend>Eléments forfaitisés
-            </legend>
-      <?php          
+            <legend>Eléments forfaitisés</legend>
+            <?php          
             // demande de la requête pour obtenir la liste des éléments 
             // forfaitisés de l' utilisateur connecté pour le mois demandé
             $req = obtenirReqEltsForfaitFicheFrais($mois, obtenirIdUserConnecte());
-            $idJeuEltsFraisForfait = mysql_query($req, $idConnexion);
-            echo mysql_error($idConnexion);
+            $idJeuEltsFraisForfait = mysql_query($req, $idConnexion) or die(mysql_error());
+            //var_dump($idJeuEltsFraisForfait);
+            //echo mysql_error($idConnexion);
+            
             $lgEltForfait = mysql_fetch_assoc($idJeuEltsFraisForfait);
+            
+            //var_dump($lgEltForfait); //test
+            
+            // if (is_array($lgEltForfait)) { echo "Set"; } //test
+
             while ( is_array($lgEltForfait) ) {
                 $idFraisForfait = $lgEltForfait["idFraisForfait"];
                 $libelle = $lgEltForfait["libelle"];

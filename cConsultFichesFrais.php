@@ -99,7 +99,7 @@
 
 
     <div class="encadre">
-        <p>&nbsp;&nbsp;Montant validé : 
+        <p>&nbsp;&nbsp;<b>Montant validé : 
     <?php 
     if ($tabFicheFrais["montantValide"] == NULL) {
         echo "Aucun";
@@ -107,7 +107,7 @@
         echo $tabFicheFrais["montantValide"] ;
     }
     ?>
-    </p>
+    </b></p>
 <?php          
             // demande de la requête pour obtenir la liste des éléments 
             // forfaitisés du utilisateurconnecté pour le mois demandé

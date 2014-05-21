@@ -24,7 +24,7 @@ function obtenirIdUserConnecte() {
     $ident="";
     if ( isset($_SESSION["loginUser"]) ) {
         $ident = (isset($_SESSION["idUser"])) ? $_SESSION["idUser"] : '';   
-    }  
+    }
     return $ident ;
 }
 

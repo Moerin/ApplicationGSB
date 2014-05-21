@@ -13,6 +13,7 @@ require('pdf/fpdf.php');
 
 class PDF extends FPDF
 {
+    
     // Fonction qui convertit les caractères latin en en format UTF8 lisible ex: €
     function utf2latin($text) {
         $text=htmlentities($text,ENT_COMPAT,'UTF-8');
@@ -50,12 +51,12 @@ class PDF extends FPDF
         $lgFicheFrais = $idJeuFicheDeFrais->fetch();
         $idJeuFicheDeFrais->closeCursor();
         $this->Ln(15);
-        $this->Cell(95,10,'',0);
+        $this->Cell(75,10,'',0);
         $this->SetTextColor(0, 0, 0);
         $this->SetFont('Times', '', 12);
         $this->Cell($this->GetStringWidth("Visiteur") +5 , 7, "Visiteur", 0);
-        $this->Cell(30, 7, utf8_decode($lgFicheFrais['prenom']) . " " . strtoupper(utf8_decode($lgFicheFrais['nom'])), 0);
-        $this->Cell($this->GetStringWidth("Mois")+ 5, 7, "Mois", 0);
+        $this->Cell($this->GetStringWidth($lgFicheFrais['prenom']) +$this->GetStringWidth($lgFicheFrais['nom']) +20, 7, utf8_decode($lgFicheFrais['prenom']) . " " . strtoupper(utf8_decode($lgFicheFrais['nom'])), 0);
+        $this->Cell($this->GetStringWidth("Mois")+ 2, 7, "Mois", 0);
         $noMois = intval(substr($idMois, 4, 2));
         $annee = intval(substr($idMois, 0, 4));
         $this->Cell(40, 7, utf8_decode(obtenirLibelleMois($noMois)) . ' ' . $annee, 0);
@@ -100,9 +101,9 @@ class PDF extends FPDF
         $this->Ln();
         $this->SetTextColor(0, 0, 0);
         $this->SetFont('Times', '', 12);
-        $idJeuFraisForfait = $bdd->query("select libelle, quantite, montant, (quantite*montant) as total from LigneFraisForfait 
-            inner join FraisForfait on (FraisForfait.id = LigneFraisForfait.idFraisForfait) 
-            where idVisiteur='" . $idVisiteur . "' and mois='" . $idMois . "' and LigneFraisForfait.idFraisForfait != 'KM'");
+        $idJeuFraisForfait = $bdd->query("select libelle, quantite, montant, (quantite*montant) as total from lignefraisforfait 
+            inner join fraisforfait on (fraisforfait.id = lignefraisforfait.idFraisForfait) 
+            where idVisiteur='" . $idVisiteur . "' and mois='" . $idMois . "' and lignefraisforfait.idFraisForfait != 'KM'");
         while ($lgFraisForfait = $idJeuFraisForfait->fetch()) {
             $this->Cell(10,0,'',0);
             $this->Cell(70, 7, $lgFraisForfait['libelle'], 1, 0, 'L', true);
@@ -135,7 +136,7 @@ class PDF extends FPDF
         $this->SetTextColor(0, 0, 0);
         $this->SetFont('Times', '', 12);
         $idJeuFraisHorsForfait = $bdd->query("select id, date, libelle, montant 
-            from LigneFraisHorsForfait where idVisiteur='" . $idVisiteur . "' and mois='" . $idMois . "'");
+            from lignefraishorsforfait where idVisiteur='" . $idVisiteur . "' and mois='" . $idMois . "'");
         while ($lgFraisHorsForfait = $idJeuFraisHorsForfait->fetch()) {
             $this->Cell(10);
             $this->Cell(50, 7, convertirDateAnglaisVersFrancais($lgFraisHorsForfait['date']), 1, 0, 'L', true);
@@ -150,7 +151,7 @@ class PDF extends FPDF
     function afficheTotal($bdd, $idMois, $idVisiteur) {
         $this->Ln();
         $this->Cell(100);
-        $idJeuFicheFrais = $bdd->query("select montantValide from ficheFrais 
+        $idJeuFicheFrais = $bdd->query("select montantValide from fichefrais 
             where idVisiteur='" . $idVisiteur . "' and mois='" . $idMois . "'");
         $lgFicheFrais = $idJeuFicheFrais->fetch();
         $idJeuFicheFrais->closeCursor();
@@ -161,20 +162,11 @@ class PDF extends FPDF
     }
     
     // Affichage de la fiche de frais
-    function afficheFicheFrais($idMois, $idVisiteur) {
-        global $hote, $bd, $login, $mdp;
+    function afficheFicheFrais($bdd, $idMois, $idVisiteur) {
+        global $hote, $bdd, $login, $mdp;
         $this->AliasNbPages();
         $this->AddPage();
         $this->SetFont('Times', '', 12);
-        // Connexion à la BDD en PDO
-        $dsn = 'mysql:host=localhost;dbname=gsb_frais';
-        $user = 'userGsb';
-        $password = 'secret';
-        try {
-            $bdd = new PDO($dsn, $user, $password);
-        } catch (Exception $e) {
-            die('Erreur : ' . $e->getMessage());
-        }
 
         // Affichage de l'entête de la fiche de frais
         $this->enteteFicheFrais($bdd, $idMois, $idVisiteur);
@@ -184,6 +176,8 @@ class PDF extends FPDF
         $this->tabFraisHorsForfaits($bdd, $idMois, $idVisiteur);
         // Affichage du total
         $this->afficheTotal($bdd, $idMois, $idVisiteur);
+        
+        
     }
 }
 
@@ -191,13 +185,33 @@ class PDF extends FPDF
 // en mode Post
 $mois = lireDonneePost("idMois", "");
 $visiteur = lireDonneePost("idVisiteur", "");
-$fichier = 'pdf/generate/truc.pdf';
+
+ // Connexion à la BDD en PDO
+$dsn = 'mysql:host=localhost;dbname=moerin_database';
+$user = 'moerin_gsb';
+$password = '#5y?{7SSl+5.';
+try {
+    $bdd = new PDO($dsn, $user, $password);
+} catch (Exception $e) {
+    die('Erreur : ' . $e->getMessage());
+}
+
+$idJeuUtilisateur = $bdd->query("select nom, prenom from utilisateur inner join "
+        . "fichefrais on id = idVisiteur where id='" .$visiteur. "' and mois='" . $mois . "'");
+if ($idJeuUtilisateur == false) {echo "Faux";}
+$lgUtilisateur = $idJeuUtilisateur->fetch();
+$idJeuUtilisateur->closeCursor();
+
+$fichier = "pdf/generate/".$mois."_" .$lgUtilisateur['nom']. "_".$lgUtilisateur['prenom'].".pdf";
 
 // Si la fiche n'existe déja pas on la crée
 if (!file_exists($fichier)) {
     $pdf = new PDF();
-    $pdf->afficheFicheFrais($mois, $visiteur);
+    $lgUtilisateur = $pdf->afficheFicheFrais($bdd, $mois, $visiteur);
     $pdf->Output();
+    $pdf->Output($fichier);
+// Sinon on affiche le fichier déja crée
+} else {
+    header("Location: " .$fichier ."");
 }
-
 ?>

@@ -1,7 +1,7 @@
 /* Styles des divisions principales de la page */
 body{
     background-color: #77AADD;
-	background-image: url(imgs/FONDGLOBAL.jpg);
+	//background-image: url(imgs/FONDGLOBAL.jpg);
 	background-repeat: repeat-x;
     margin:0% 0%;
     padding : 0.6em;
@@ -266,11 +266,15 @@ taille de caract�res l�g�rement sup�rieure � la normale */
 
 table.listeLegere {
 /*    width:80%;*/
+    table-layout: fixed;
+    width : 98.5%;
     margin-bottom : 0.5em;
 }
 
 /* Tableaux quadrill�s utilis�s pour l'affichage de listes avec contenu l�ger*/ 
 table.listeLegere th, table.listeLegere td {
+  word-wrap: break-word;
+  font-size: 12px;
   border : dotted rgb(178,207,81) 0.1em;
   padding:0.5em;
   vertical-align : top;
