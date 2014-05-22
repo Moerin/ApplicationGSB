@@ -14,22 +14,42 @@ if (!estUtilisateurConnecte()) {
 require($repInclude . "_entete.inc.html");
 require($repInclude . "_sommaire.inc.php");
 
+// affectation du mois précédent pour la validation des fiches de frais
+$mois = sprintf("%04d%02d", date("Y"), date("m"));
+// Cloture des fiches de frais antérieur au mois courant et au besoin, création des fiches pour le mois courant
+cloturerFichesFrais($idConnexion, $mois);
+
 /* récupération des données entrées pour l'affichage des différentes parties de la page
 infos id visiteur, mois et etape de traitement */
 $visiteurChoisi = lireDonnee("lstVisiteur");
 $moisChoisi = lireDonnee("lstMois");
 $etapeChoisi = lireDonnee("etape");
 $tabQteEltsForfait = lireDonneePost("txtEltsForfait", "");
+$tabQteEltsHorsForfait = lireDonneePost("txtEltsHorsForfait", "");
+$nbJustificatifs = lireDonneePost("nbJustificatifs", "");
+$montantTotalElts = lireDonneePost("lstMontantEF", "");
+$montantTotalElts += lireDonneePost("lstMontantHF", "");
+$lgVisiteur = obtenirDetailUtilisateur($idConnexion, $visiteurChoisi);
 
+// Declaration des variables
 // variable d'information sur la fiche et l'utilisateur
-//$visiteurNom;
-//$visiteurPrenom;
-$libelleMois;
+$libelleMois = "";
+
+// variable sur les éléments forfaitisés
+$montantElementForfaitise = 0.0;
+
+// variable sur les éléments hors forfait
+$libelleFraisHorsForfait = "";
+$montantFraisHorsForfait = "";
+$dateFraisHorsForfait = "";
+$montantFraisHorsForfaitTotal = 0.0;
+
 // actions sur les difféntes étapes du cas d'utilisation
 if ($etapeChoisi == "choixVisiteur") {
 
 } elseif ($etapeChoisi == "choixMois") {
 
+// étape d'actualisation des éléments forfaitisés
 } elseif ($etapeChoisi == "actualiserFraisForfait") {
     $valid = verifierEntiersPositifs($tabQteEltsForfait);
     if (!$valid) { // cas où les élements ne seraient pas des entiers positifs
@@ -40,17 +60,64 @@ if ($etapeChoisi == "choixVisiteur") {
         <p class="info">L'actualisation des quantités au forfait a bien été enregistré</p>
         <?php
     }
+    
+// étape d'actualisation des éléments hors forfait
+} elseif ($etapeChoisi == "actualiserFraisHorsForfait") {
+    foreach ($tabQteEltsHorsForfait as $cle => $val) {
+        switch ($cle) {
+            case "libelle":
+                $libelleFraisHorsForfait = $val;
+                Break;
+            case "montant":
+                $montantFraisHorsForfait = $val;
+                Break;
+            case "date":
+                $dateFraisHorsForfait = $val;
+                Break;
+        }
+    }
+    // Verification de éléments constituant la fiche de frais
+    verifierLigneFraisHF($dateFraisHorsForfait, $libelleFraisHorsForfait, $montantFraisHorsForfait, $tabErreurs);
+    if ($tabErreurs != 0) { // si aucune erreur est présente on passe à la modification
+        modifierEltsHorsForfait($idConnexion, $tabQteEltsHorsForfait);
+        ?>
+        <p class="info">L'actualisation des éléments hors forfait a bien été enregistré</p>
+        <?php
+    }
+// étape d'actualisation des nombres de justificatifs
+} elseif ($etapeChoisi == "actualiserNbJustificatifs") {
+    $valid = estEntierPositif($nbJustificatifs);
+    if (!$valid) { // cas où les élements ne seraient pas des entiers positifs
+        ajouterErreur($tabErreurs, "Chaque quantité doit être renseignée et un entier positif.");
+    } else { // dans le cas contraire les éléments peuvent être ajoutés
+        modifierJustificatifFicheFrais($idConnexion, $moisChoisi, $visiteurChoisi, $nbJustificatifs);
+        ?>
+        <p class="info">L'actualisation des justificatifs a bien été enregistré</p>
+        <?php
+    }
+} elseif ($etapeChoisi == "validerFiche") {
+    modifierEtatFicheFrais($idConnexion, $moisChoisi, $visiteurChoisi, $montantTotalElts, "VA");
+    ?>
+    <p class="info">La fiche de frais du visiteur <?php echo $lgVisiteur['prenom'] . " " . $lgVisiteur['nom']; ?> 
+        pour <?php echo obtenirLibelleMois(intval(substr($moisChoisi, 4, 2))) . " " . intval(substr($moisChoisi, 0, 4)); ?> 
+        a bien été enregistrée</p>        
+    <?php
+} elseif ($etapeChoisi === 'reporterLigneFrais') {
+    reporterLigneHorsForfait($idConnexion, $tabQteEltsHorsForfait['id']);
+    ?>
+    <p class="info">La fiche à bien été reporté au mois suivant</p>
+    <?php
 }
-
 ?>
 
+<!-- Division principale -->
 <div id="contenu">
     <h1>Valider les fiches de frais</h1>
     <form id="formChoixVisiteur" method="post" action="">
         <p>
             <input type="hidden" name="etape" value="choixVisiteur" />
             <label class="title">Choisir le visiteur :</label>
-            <select name="lstVisiteur" id="idLstVisiteur" class="zone" >
+            <select name="lstVisiteur" id="idLstVisiteur" class="zone" onchange="this.form.submit();" >
                 <?php
                 // Dans le cas où aucun visiteur n'a été choisi on le signifie dans le sélection de liste
                 if ( $visiteurChoisi == "") {
@@ -84,10 +151,10 @@ if ($etapeChoisi == "choixVisiteur") {
                 <input type="hidden" name="lstVisiteur" value="<?php echo $visiteurChoisi; ?>" />
                 <?php
                 // On affiche les mois pour lesquels le visiteur dipose d'une fiche de frais
-                $req = obtenirReqMoisFicheFrais($visiteurChoisi, 'CL'); // on recupère les mois ou la saisie est cloturée = 'CL'
+                $req = obtenirReqMoisFicheFraisCloturée($visiteurChoisi); // on recupère les mois ou la saisie est cloturée = 'CL'
                 $idJeuMois = mysql_query($req, $idConnexion);
                 $lgMois = mysql_fetch_assoc($idJeuMois);
-                // ref cas utilisation 4-a Si il n4existe pas de fiche de frais on affiche l'erreur "Pas de fiche de frais pour ce visiteur ce mois"
+                // ref cas utilisation 4-a Si il n'existe pas de fiche de frais on affiche l'erreur "Pas de fiche de frais pour ce visiteur ce mois"
                 // retour au cas 2
                 if (empty($lgMois)) {
                     ajouterErreur($tabErreurs, "Pas de fiche de frais à valider pour ce visiteur");
@@ -96,30 +163,30 @@ if ($etapeChoisi == "choixVisiteur") {
                     ?>
                     <label class ="titre"> Mois :</label>
                     <select name="lstMois" id="idDateValid" class="zone" onchange="this.form.submit();">
-                        <?php
-                        // Si aucun mois n'a encore été choisi, on place en premier une invitation au choix
-                        if ($moisChoisi == "") {
-                            ?>
+                    <?php
+                    // Si aucun mois n'a encore été choisi, on place en premier une invitation au choix
+                    if ($moisChoisi == "") {
+                        ?>
                         <option value="-1"> Sélectionner un mois </option>
-                            <?php
-                        } 
-                        while (is_array($lgMois)) {
-                            $mois = $lgMois["mois"];
-                            $noMois = intval(substr($mois, 4, 2));
-                            $libelleMois = obtenirLibelleMois($noMois);
-                            $annee = intval(substr($mois,0,4));
-                            ?>
-                            <option value="<?php echo $mois; ?>"
-                                <?php 
-                                if ($moisChoisi == $mois) { 
-                                    ?> selected="selected"<?php 
-                                } 
-                                ?>>
-                            <?php echo $libelleMois . ' ' . $annee; ?></option>
-                            <?php
-                            $lgMois = mysql_fetch_assoc($idJeuMois);
-                        }
-                        mysql_free_result($idJeuMois);
+                        <?php
+                    } 
+                    while (is_array($lgMois)) {
+                        $mois = $lgMois["mois"];
+                        $noMois = intval(substr($mois, 4, 2));
+                        $libelleMois = obtenirLibelleMois($noMois);
+                        $annee = intval(substr($mois,0,4));
+                        ?>
+                        <option value="<?php echo $mois; ?>"
+                            <?php 
+                            if ($moisChoisi == $mois) { 
+                                ?> selected="selected"<?php 
+                            } 
+                            ?>>
+                        <?php echo $libelleMois . ' ' . $annee; ?></option>
+                        <?php
+                        $lgMois = mysql_fetch_assoc($idJeuMois);
+                    }
+                    mysql_free_result($idJeuMois);
                 }
                 ?>
                 </select>
@@ -128,9 +195,11 @@ if ($etapeChoisi == "choixVisiteur") {
         <p class="titre">&nbsp;</p>
     <?php
     }
+    // Le formulaire de gestion des frais n'est visible que si le visituer et le mois on été sélectionné
     if ($visiteurChoisi != "" && $moisChoisi !== "") {
     ?>
     <?php 
+    // Affichage de la situation de la fiche de frais
     $tabFicheFrais = obtenirDetailFicheFrais($idConnexion, $moisChoisi, $visiteurChoisi);
     ?>
     Situation de la fiche de frais au mois de <?php echo $libelleMois; ?> : 
@@ -139,43 +208,65 @@ if ($etapeChoisi == "choixVisiteur") {
     <?php
     $req = obtenirReqEltsForfaitFicheFrais($moisChoisi, $visiteurChoisi);
     $idJeuForfait = mysql_query($req, $idConnexion);
-    $lgEltsForfait = mysql_fetch_assoc($idJeuForfait);
+    $lgEltsForfait = mysql_fetch_assoc($idJeuForfait) or die(mysql_error());
     ?>
     <form id="formFraisForfait" method="post" action="" >
         <p>
             <input type="hidden" name="etape" value="actualiserFraisForfait" />
             <input type="hidden" name="lstVisiteur" value="<?php echo $visiteurChoisi; ?>" />
             <input type="hidden" name="lstMois" value="<?php echo $moisChoisi; ?>" />
+            <input type="hidden" name="lstMontantEF" value="<?php echo $montantElementForfaitise; ?>" />
         </p>
         <table id="tableF">
             <tr>
-                <th>Repas midi</th><th>Nuitée</th><th>Etape</th><th>Km</th><th>Action</th>
+                <th>Repas midi</th><th>Nuitée</th><th>Etape</th>
+                <th>Véhicule 4CV Diesel</th>
+                <th>Véhicule 4CV Essence</th>
+                <th>Véhicule 5/6CV Diesel</th>
+                <th>Véhicule 5/6CV Essence</th>
+                <th>Action</th>
             </tr>    
             <tr>
                 <?php
+                // Les valeurs sont affectées en fonction de la clef du tableau associatif
                 while(is_array($lgEltsForfait)) {
                     if ($lgEltsForfait["idFraisForfait"] == "ETP") {
                         $etp = $lgEltsForfait["quantite"];
-                    } elseif ($lgEltsForfait["idFraisForfait"] == "KM") {
-                        $km = $lgEltsForfait["quantite"];
+                        $montantElementForfaitise += $etp * $lgEltsForfait["montant"];
+                    } elseif ($lgEltsForfait["idFraisForfait"] == "KM4d") {
+                        $km4d = $lgEltsForfait["quantite"];
+                        $montantElementForfaitise += $km4d * $lgEltsForfait["montant"];
                     } elseif ($lgEltsForfait["idFraisForfait"] == "NUI") {
-                        $nui = $lgEltsForfait["quantite"]; 
-                    } else {
+                        $nui = $lgEltsForfait["quantite"];
+                        $montantElementForfaitise += $nui * $lgEltsForfait["montant"];
+                    } elseif ($lgEltsForfait["idFraisForfait"] == "REP") {
                         $rep = $lgEltsForfait["quantite"];
+                        $montantElementForfaitise += $rep * $lgEltsForfait["montant"];
+                     } elseif ($lgEltsForfait["idFraisForfait"] == "KM4e") {
+                        $km4e = $lgEltsForfait["quantite"];
+                        $montantElementForfaitise += $km4e * $lgEltsForfait["montant"];
+                    } elseif ($lgEltsForfait["idFraisForfait"] == "KM56d") {
+                        $km56d = $lgEltsForfait["quantite"];
+                        $montantElementForfaitise += $km56d * $lgEltsForfait["montant"];
+                    }else {
+                        $km56e = $lgEltsForfait["quantite"];
+                        $montantElementForfaitise += $km56e * $lgEltsForfait["montant"];
                     }
                     $lgEltsForfait = mysql_fetch_assoc($idJeuForfait);
                 }
-                // 
                 ?>
-                <td><input type="number" id="idETP" name="txtEltsForfait[ETP]" value="<?php echo $etp; ?>" /></td>
-                <td><input type="number" id="idKM" name="txtEltsForfait[KM]" value="<?php echo $km; ?>" </td>
-                <td><input type="number" id="idNUI" name="txtEltsForfait[NUI]" value="<?php echo $nui; ?>" </td>
-                <td><input type="number" id="idREP" name="txtEltsForfait[REP]" value="<?php echo $rep; ?>" /></td>
+                <td><input type="text" id="idETP" name="txtEltsForfait[ETP]" value="<?php echo $etp; ?>" /></td>
+                <td><input type="text" id="idKM4d" name="txtEltsForfait[KM4d]" value="<?php echo $km4d; ?>" </td>
+                <td><input type="text" id="idKM4e" name="txtEltsForfait[KM4e]" value="<?php echo $km4e; ?>" </td>
+                <td><input type="text" id="idKM56d" name="txtEltsForfait[KM56d]" value="<?php echo $km56d; ?>" </td>
+                <td><input type="text" id="idKM56e" name="txtEltsForfait[KM56e]" value="<?php echo $km56e; ?>" </td>
+                <td><input type="text" id="idNUI" name="txtEltsForfait[NUI]" value="<?php echo $nui; ?>" </td>
+                <td><input type="text" id="idREP" name="txtEltsForfait[REP]" value="<?php echo $rep; ?>" /></td>
                 <td>
                     <div id="actionsFraisForfait" class="actions">
                            <img src="images/actualiserIcon.png" id="lkActualiserLigneFraisForfait" class="icon"
                            alt="icone Actualiser"  onclick="actualiserLigneFraisForfait(<?php echo $rep; ?>,
-                           <?php echo $nui; ?>,<?php echo $etp; ?>,<?php echo $km; ?>);"  title="Actualiser la ligne de frais forfaitisé" />
+                           <?php echo $nui; ?>,<?php echo $etp; ?>,<?php echo $km4d; ?>,<?php echo $km4e; ?>,<?php echo $km56d; ?>,<?php echo $km56e; ?>);"  title="Actualiser la ligne de frais forfaitisé" />
                            <img src="images/reinitialiserIcon.png" id="lkReinitialiserLigneFraisForfait" class="icon"
                            alt="icone Réinitialiser" onclick="reinitialiserLigneFraisForfait();" title="Rénitialiser la ligne de frais forfaitisé" />
                     </div>
@@ -185,25 +276,30 @@ if ($etapeChoisi == "choixVisiteur") {
                 ?>
             </tr>
         </table>
+
+        <p>MONTANT TOTAL FRAIS FORFAITISE : <?php echo $montantElementForfaitise ?></p>
     </form>
     <div id="msgFraisForfait" class="infosNonActualisees">
         Attention, les modifications doivent être actualisées pour être réellement prises en compte...
     </div>
+    
     <h2>Hors forfait</h2>
     <?php
+    // On récupére les lignes hors forfait pour le traitement
     $req = obtenirReqEltsHorsForfaitFicheFrais($moisChoisi, $visiteurChoisi);
-    $idJeuHorsForfait = mysql_query($req, $idConnexion);
+    $idJeuHorsForfait = mysql_query($req, $idConnexion) or die(mysql_error());
     $lgEltsHorsForfait = mysql_fetch_assoc($idJeuHorsForfait);
-    $nbJustificatif = 0;
+      
+    do
+    {
+        $montantFraisHorsForfaitTotal += $lgEltsHorsForfait["montant"];
     ?>
-        <?php
-        while(is_array($lgEltsHorsForfait)) {
-        ?>
     <form id="formFraisHorsForfait<?php echo $lgEltsHorsForfait['id'];?>" method="post" action="" >
         <p>
             <input type="hidden" id="idEtape<?php echo $lgEltsHorsForfait['id']; ?>" name="etape" value="actualiserFraisHorsForfait"/>
             <input type="hidden" name="lstVisiteur" value="<?php echo $visiteurChoisi; ?>" />
             <input type="hidden" name="lstMois" value="<?php echo $moisChoisi; ?>" />
+            <input type="hidden" name="lstMontantHF" value="<?php echo $montantFraisHorsForfaitTotal; ?>" />
             <input input type="hidden" name="txtEltsHorsForfait[id]" value="<?php echo $lgEltsHorsForfait['id']; ?>" />
         </p>
         <table id="tableHF">
@@ -211,47 +307,122 @@ if ($etapeChoisi == "choixVisiteur") {
                 <th>Date</th><th>Libellé</th><th>Montant</th><th>Action</th>
             </tr>
             <tr>
-                <td><input value="<?php echo convertirDateAnglaisVersFrancais($lgEltsHorsForfait["date"]); ?>" /></td>
+                <td><input id="idDate<?php echo $lgEltsHorsForfait["id"]?>" name="txtEltsHorsForfait[date]" value="<?php echo convertirDateAnglaisVersFrancais($lgEltsHorsForfait["date"]); ?>" /></td>
+                <td >
                 <?php
-                // Si lle libelle REFUSÉ : est présent on barre le texte sinon on l'affiche normalement
-                if (strpos($lgEltsHorsForfait["libelle"], "REFUSÉ : ") == false) {
+                // Si le libelle REFUSÉ : est présent on barre le texte sinon on l'affiche normalement
+                if (strpos($lgEltsHorsForfait["libelle"], "REFUSÉ : ") === false) {
                 ?>
-                <td>
-                <?php    
+                <input
+                <?php   
                 } else {
                 ?>
-                <td class="tdLineThrough">  
+                <input class="tdLineThrough"
                 <?php  
                 }
                 ?>
-                <input value="<?php echo $lgEltsHorsForfait["libelle"]; ?>" /></td>
-                <td><input value="<?php echo $lgEltsHorsForfait["montant"]; ?>" /></td>
+                    id="idLibelle<?php echo $lgEltsHorsForfait["id"]?>" name="txtEltsHorsForfait[libelle]" 
+                           value="<?php echo filtrerChainePourNavig($lgEltsHorsForfait["libelle"]); ?>" />
+                </td>
+                <td>
+                    <input id="idMontant<?php echo $lgEltsHorsForfait["id"]?>" name="txtEltsHorsForfait[montant]" 
+                           value="<?php echo $lgEltsHorsForfait["montant"]; ?>" />
+                </td>
                 <td id="tdAction">
-                    <div id="actionsFraisForfait" class="actions">
-                           <img src="images/actualiserIcon.png" id="lkActualiserLigneFraisHF" class="icon"
-                           alt="icone Actualiser"  onclick=""  title="Actualiser la ligne hors forfait" />
-                           <img src="images/reinitialiserIcon.png" id="lkReinitialiserLigneFraisHF" class="icon"
-                           alt="icone Réinitialiser" onclick="reinitialiserLigneFraisHorsForfait(idElementHF);" title="Rénitialiser la ligne hors forfait" />
+                    <div id="actionsFraisHorsForfait<?php echo $lgEltsHorsForfait["id"] ?>" class="actions">
+                        <img src="images/actualiserIcon.png" id="lkActualiserLigneFraisHF" class="icon"
+                            alt="icone Actualiser"  onclick="actualiserLigneFraisHorsForfait('<?php echo $lgEltsHorsForfait["id"];?>',
+                                   '<?php echo convertirDateAnglaisVersFrancais($lgEltsHorsForfait["date"]); ?>',     
+                                   '<?php echo filtrerChainePourNavig($lgEltsHorsForfait["libelle"]); ?>',
+                                   '<?php echo $lgEltsHorsForfait["montant"]; ?>')"
+                            title="Actualiser la ligne hors forfait"  title="Actualiser la ligne de frais hors forfait" />
+                        <img src="images/reinitialiserIcon.png" id="lkReinitialiserLigneFraisHF" class="icon"
+                            alt="icone Réinitialiser" onclick="reinitialiserLigneFraisHorsForfait('<?php echo $lgEltsHorsForfait['id']; ?>');" 
+                            title="Rénitialiser la ligne hors forfait" />
+                            <?php
+                            // L'option "Supprimer" n'est proposée que si les frais n'ont pas déjà été refusés
+                            if (strpos($lgEltsHorsForfait['libelle'], 'REFUSÉ : ') === false) {
+                            ?>
+                        <img src="images/refuseIcon.png" id="lkRefuserLigneFraisHF" class="icon"
+                            alt="icone Refuser" onclick="refuseLigneFraisHorsForfait('<?php echo $lgEltsHorsForfait['id']; ?>');" 
+                            title="Refuser la ligne hors forfait" />
+                        <img src="images/reporterIcon.png" id="lkReporterLigneFraisHF" class="icon"
+                            alt="icone Reporter" onclick="reporterLigneFraisHorsForfait('<?php echo $lgEltsHorsForfait['id']; ?>');" 
+                            title="Reporter la ligne hors forfait" />
+                            <?php // J'ai scindé ca avec reinitialiser a voir si c'est pertinent
+                            } else {
+                            ?>
+                        <img src="images/reintegrerIcon.png" id="lkReintegrerLigneFraisHF" class="icon"
+                            alt="icone Reintegrer" onclick="reintegrerLigneFraisHorsForfait('<?php echo $lgEltsHorsForfait['id']; ?>');" 
+                            title="Reintegrer la ligne hors forfait" />
+                            <?php
+                            }
+                            ?>
                     </div>
                 </td>
-            <?php
-                $lgEltsHorsForfait = mysql_fetch_assoc($idJeuHorsForfait);
-                $nbJustificatif += 1;
-            }
-            mysql_free_result($idJeuHorsForfait)
-            ?>
             </tr>
         </table>
     </form>
-    <p>Nombre de justificatif</p><input name="justificatif" value="<?php echo $nbJustificatif; ?>"/>
+    <div id="msgFraisHorsForfait<?php echo $lgEltsHorsForfait['id']; ?>" class="infosNonActualisees">
+        Attention, les modifications doivent être actualisées pour être réellement prises en compte...</div>
+        <?php
+            $lgEltsHorsForfait = mysql_fetch_assoc($idJeuHorsForfait);
+        }while(is_array($lgEltsHorsForfait));
+        mysql_free_result($idJeuHorsForfait)
+    // Form d'actualisation du nombre de justificatif  
+    ?>
+    <p>MONTANT TOTAL FRAIS HORS FORFAIT : <?php echo $montantFraisHorsForfaitTotal ?></p>
+    <form id="formNbJustificatifs" method="post" action="">
+        <p>
+            <input type="hidden" name="etape" value="actualiserNbJustificatifs" />
+            <input type="hidden" name="lstVisiteur" value="<?php echo $visiteurChoisi; ?>" />
+            <input type="hidden" name="lstMois" value="<?php echo $moisChoisi; ?>" />
+        </p>
+        <div class="titre">Nombre de justificatifs :
+            <?php
+            $laFicheFrais = obtenirDetailFicheFrais($idConnexion, $moisChoisi, $visiteurChoisi);
+            ?>
+            <input type="text" class="zone" size="4" id="idNbJustificatifs" name="nbJustificatifs" 
+                   value="<?php echo $laFicheFrais['nbJustificatifs']; ?>" style="text-align:center;" 
+                   onchange="afficheMsgNbJustificatifs();" />
+            <div id="actionsNbJustificatifs" class="actions">
+                <a class="actions" id="lkActualiserNbJustificatifs" 
+                   onclick="actualiserNbJustificatifs(<?php echo $laFicheFrais['nbJustificatifs']; ?>);" 
+                   title="Actualiser le nombre de justificatifs">&nbsp;
+                    <img src="images/actualiserIcon.png" class="icon" alt="icone Actualiser" />
+                </a>
+                <a class="actions" id="lkReinitialiserNbJustificatifs" 
+                   onclick="reinitialiserNbJustificatifs();" 
+                   title="Réinitialiser le nombre de justificatifs">&nbsp;
+                    <img src="images/reinitialiserIcon.png" class="icon" alt="icone Réinitialiser" />
+                </a>
+            </div>
+        </div>
+    </form>
+    <div id="msgNbJustificatifs" class="infosNonActualisees">
+         Attention, le nombre de justificatifs doit être actualisé pour être réellement pris en compte...</div>
+    <form id="formValidFiche" method="post" action="">
+        <p>
+            <input type="hidden" name="etape" value="validerFiche" />
+            <input type="hidden" name="lstVisiteur" value="<?php echo $visiteurChoisi; ?>" />
+            <input type="hidden" name="lstMois" value="<?php echo $moisChoisi; ?>" />
+            <input type="hidden" name="lstMontantEF" value="<?php echo $montantElementForfaitise; ?>" />
+            <input type="hidden" name="lstMontantHF" value="<?php echo $montantFraisHorsForfaitTotal; ?>" />
+        <p>
+            <input id="validInput" class="zone" type="button" 
+                   onclick="validerFiche();" value="Valider cette fiche" />
+        </p>
+    </form>
     <?php    
     }
     ?>
 </div>
-
+<?php
+// Inclusion des fonctions javascript
+?>
 <script type="text/javascript">
 <?php
-    require($repInclude . "_fonctionsValidFichesFrais.inc.js");
+    require($repInclude . "_fonctionsFiches.inc.js");
 ?>
 </script>
 <?php

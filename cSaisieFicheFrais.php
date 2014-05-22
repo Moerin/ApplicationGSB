@@ -17,7 +17,7 @@
   $mois = sprintf("%04d%02d", date("Y"), date("m"));
   // vérification de l'existence de la fiche de frais pour ce mois courant
   $existeFicheFrais = existeFicheFrais($idConnexion, $mois, obtenirIdUserConnecte());
-  // si elle n'existe pas, on la crée avec les élets frais forfaitisés à 0
+  // si elle n'existe pas, on la crée avec les élements frais forfaitisés à 0
   if ( !$existeFicheFrais ) {
       ajouterFicheFrais($idConnexion, $mois, obtenirIdUserConnecte());
   }
@@ -138,9 +138,15 @@
                 <td><?php echo $lgEltHorsForfait["date"] ; ?></td>
                 <td><?php echo filtrerChainePourNavig($lgEltHorsForfait["libelle"]) ; ?></td>
                 <td><?php echo $lgEltHorsForfait["montant"] ; ?></td>
-                <td><a href="?etape=validerSuppressionLigneHF&amp;idLigneHF=<?php echo $lgEltHorsForfait["id"]; ?>"
-                       onclick="return confirm('Voulez-vous vraiment supprimer cette ligne de frais hors forfait ?');"
-                       title="Supprimer la ligne de frais hors forfait">Supprimer</a></td>
+
+                <td>
+                    <img href="?etape=validerSuppressionLigneHF&amp;idLigneHF=<?php echo $lgEltHorsForfait["id"]; ?>" 
+                         class="icon" title="Refuser la ligne hors forfait"
+                         onclick="return confirm('Voulez-vous vraiment supprimer cette ligne de frais hors forfait ?');"
+                        alt="icone Supprimer" src="images/reinitialiserIcon.png">
+                    <!--<a href="?etape=validerSuppressionLigneHF&amp;idLigneHF=<?php echo $lgEltHorsForfait["id"]; ?>"
+                    onclick="return confirm('Voulez-vous vraiment supprimer cette ligne de frais hors forfait ?');"
+                    title="Supprimer la ligne de frais hors forfait">Supprimer</a>--></td>
               </tr>
           <?php
               $lgEltHorsForfait = mysql_fetch_assoc($idJeuEltsHorsForfait);

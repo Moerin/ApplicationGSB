@@ -66,7 +66,7 @@ function convertirDateFrancaisVersAnglais($date){
 */
 function convertirDateAnglaisVersFrancais($date){
     @list($annee,$mois,$jour) = explode('-',$date);
-    return date("d/m/Y", mktime(0, 0, 0, $mois, $jour, $annee));
+    return date("d/m/Y", time(0, 0, 0, $mois, $jour, $annee)); // remplacer time par mktime
 }
 
 /**

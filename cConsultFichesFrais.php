@@ -47,8 +47,8 @@
         <label for="lstMois">Mois : </label>
         <select id="lstMois" name="lstMois" title="Sélectionnez le mois souhaité pour la fiche de frais">
             <?php
-                // on propose tous les mois pour lesquels le utilisateura une fiche de frais
-                $req = obtenirReqMoisFicheFrais(obtenirIdUserConnecte());
+                // on propose tous les mois pour lesquels l'utilisateur a une fiche de frais
+                $req = obtenirReqMoisFicheFraisCrée(obtenirIdUserConnecte());
                 $idJeuMois = mysql_query($req, $idConnexion);
                 $lgMois = mysql_fetch_assoc($idJeuMois);
                 while ( is_array($lgMois) ) {
@@ -87,10 +87,27 @@
     <h3>Fiche de frais du mois de <?php echo obtenirLibelleMois(intval(substr($moisSaisi,4,2))) . " " . substr($moisSaisi,0,4); ?> : 
     <em><?php echo $tabFicheFrais["libelleEtat"]; ?> </em>
     depuis le <em><?php echo $tabFicheFrais["dateModif"]; ?></em></h3>
+      
+    <form id="formCréerPDF" method="post" action="cCreerPDF.php">
+        <input type="hidden" name="idVisiteur" value="<?php echo obtenirIdUserConnecte(); ?>" />
+        <input type="hidden" name="idMois" value="<?php echo $moisSaisi; ?>" />
+        <img src="images/pdfIcon.png" id="lkCreerFicheFraisPdf" class="icon"
+             alt="Creer PDF" onclick="document.getElementById('formCréerPDF').submit();"/>
+        <a style="cursor:pointer;" 
+           onclick="document.getElementById('formCréerPDF').submit();">Exporter au format PDF </a>
+    </form>
+
+
     <div class="encadre">
-    <p>Montant validé : <?php echo $tabFicheFrais["montantValide"] ;
-        ?>              
-    </p>
+        <p>&nbsp;&nbsp;<b>Montant validé : 
+    <?php 
+    if ($tabFicheFrais["montantValide"] == NULL) {
+        echo "Aucun";
+    } else {
+        echo $tabFicheFrais["montantValide"] ;
+    }
+    ?>
+    </b></p>
 <?php          
             // demande de la requête pour obtenir la liste des éléments 
             // forfaitisés du utilisateurconnecté pour le mois demandé
@@ -98,7 +115,7 @@
             $idJeuEltsFraisForfait = mysql_query($req, $idConnexion);
             echo mysql_error($idConnexion);
             $lgEltForfait = mysql_fetch_assoc($idJeuEltsFraisForfait);
-            // parcours des frais forfaitisés du utilisateurconnecté
+            // parcours des frais forfaitisés de l'utilisateur connecté
             // le stockage intermédiaire dans un tableau est nécessaire
             // car chacune des lignes du jeu d'enregistrements doit être doit être
             // affichée au sein d'une colonne du tableau HTML
@@ -113,7 +130,7 @@
   	   <caption>Quantités des éléments forfaitisés</caption>
         <tr>
             <?php
-            // premier parcours du tableau des frais forfaitisés du utilisateurconnecté
+            // premier parcours du tableau des frais forfaitisés de l'utilisateur connecté
             // pour afficher la ligne des libellés des frais forfaitisés
             foreach ( $tabEltsFraisForfait as $unLibelle => $uneQuantite ) {
             ?>
@@ -124,7 +141,7 @@
         </tr>
         <tr>
             <?php
-            // second parcours du tableau des frais forfaitisés du utilisateur connecté
+            // second parcours du tableau des frais forfaitisés de l'utilisateur connecté
             // pour afficher la ligne des quantités des frais forfaitisés
             foreach ( $tabEltsFraisForfait as $unLibelle => $uneQuantite ) {
             ?>

@@ -1,7 +1,7 @@
 /* Styles des divisions principales de la page */
 body{
     background-color: #77AADD;
-	background-image: url(imgs/FONDGLOBAL.jpg);
+	//background-image: url(imgs/FONDGLOBAL.jpg);
 	background-repeat: repeat-x;
     margin:0% 0%;
     padding : 0.6em;
@@ -56,12 +56,12 @@ body{
   height:27em;
 }
 
-/* pour r�tablir le mauvais effet sur les nav. modernes */
+/* pour retablir le mauvais effet sur les nav. modernes */
 html>body #contenu{
   height:auto;
 }
 
-/* style � appliquer � la balise ul d'identifiant menulist */
+/* style a appliquer a la balise ul d'identifiant menulist */
 ul#menuList{
     list-style:none;
     margin:0px;
@@ -70,14 +70,14 @@ ul#menuList{
     font-size: 1em;
 }
 
-/* style � appliquer aux �l�ments de la balise ul d'identifiant menulist */
+/* style a appliquer aux elements de la balise ul d'identifiant menulist */
 ul#menuList li {
     position:relative;
     margin:0px;
     padding:0px;
 }
 
-/* apparences des liens dans listes et sous-listes non num�rot�es */
+/* apparences des liens dans listes et sous-listes non numerotees */
 ul#menuList a {
     color:rgb(0,85,227);
     display:block;
@@ -149,7 +149,7 @@ form {
 .corpsForm label{
   display: block;
   //text-align:right;
-  width:28%;
+  //width:28%;
   margin: 0;
   padding: 0 .5em 0 0;
   line-height: 1.8;	
@@ -233,6 +233,7 @@ taille de caract�res l�g�rement sup�rieure � la normale */
    margin-right : auto ;
    margin-left:0.3em;
    border-collapse : collapse;
+   width: 90%;
 }
 
 /* Style pour les lignes d'en-t�te des tableaux */
@@ -250,19 +251,34 @@ taille de caract�res l�g�rement sup�rieure � la normale */
    border :1px solid #777777;
 }
 
+#contenu .tdLineThrough {
+    text-decoration: line-through;
+    background-color:gainsboro;
+}
+
 #contenu h3 {
     font-size : 1.2em;
 }
+
+#contenu #validInput {
+    float: right;
+    margin-bottom: 10px;
+}
+
 table.listeLegere {
 /*    width:80%;*/
+    table-layout: fixed;
+    width : 98.5%;
     margin-bottom : 0.5em;
 }
 
 /* Tableaux quadrill�s utilis�s pour l'affichage de listes avec contenu l�ger*/ 
 table.listeLegere th, table.listeLegere td {
+  //word-wrap: break-word;
+  font-size: 12px;
   border : dotted rgb(178,207,81) 0.1em;
   padding:0.5em;
-  vertical-align : top;
+  vertical-align : central;
   text-align : left;
 }
 
@@ -272,19 +288,31 @@ table.listeLegere caption {
   margin-bottom : 0.3em;
 }
 table.listeLegere td {
-  vertical-align:top;
   font-weight:normal;
 }
-table.listeLegere th.eltForfait{
+table.listeLegere th.eltForfait {
   color:black;
 }
-table.listeLegere th.date, table.listeLegere th.montant{
+table.listeLegere th.date, table.listeLegere th.montant {
   width:15%;
   color:black;
 }
-table.listeLegere th.libelle{
+table.listeLegere td.qteForfait {
+    text-align:right;
+}
+table.listeLegere th.libelle {
   width:70%;
   color:black;
+}
+
+#contenu .encadre table {
+    width: 99%;
+    font-size: 0.8em;
+    vertical-align: central;       
+}
+
+#contenu .encadre table tr th{
+    vertical-align: central;
 }
 
 #contenu h2 {
@@ -296,13 +324,13 @@ table.listeLegere th.libelle{
 	border : 1px solid #6988BE;
 	padding-left: 25px;
 	background-color: #E9F1FE;
-  height : 28px;
+        height : 28px;
 }
 
 #contenu img {
   height : 16px;
   float : center;
-  padding: 10px;
+  padding: 5px;
 }
 
 /* Input des tableaux de cValidFrais.php */
@@ -325,4 +353,45 @@ table.listeLegere th.libelle{
 #tableHF #tdAction {
     width: 80px;
     text-align: center;
+}
+
+/* Style pour les tableaux de la fiche de suivie de paiement */
+
+#contenu .tabForfait {
+    border: 0 none;
+    min-width: 200px;
+    width: 95%;
+}
+
+#contenu .tabHF {
+    min-width: 200px;
+    width: 98%;
+    margin: 1px;
+}
+
+#contenu .tabForfait tr td{
+    border: 0 none;
+    padding: 3px;
+}
+
+#contenu .tabForfait tr , .tabHF tr , .alignDroite {
+    text-align: right;
+}
+
+#contenu .tabForfait tr , .tabHF tr , .alignGauche {
+    text-align: left;
+}
+
+#contenu .tabForfait tr , .tabHF tr , .alignCentre {
+    text-align: center;
+}
+
+#contenu .ecritureLargeGras {
+    font-size: 1em;
+    font-weight: bold;
+}
+
+#contenu #inputValiderFiche {
+    float:right;
+    clear:both;
 }
