@@ -48,7 +48,7 @@
   }
 
   require($repInclude . "_entete.inc.html");
-  require($repInclude . "_sommaire.inc.php");
+  //require($repInclude . "_sommaire.inc.php"); // provoque une erreur d'acces
   
 ?>
 <!-- Division pour le contenu principal -->
