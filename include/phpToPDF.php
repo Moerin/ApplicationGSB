@@ -1,4 +1,4 @@
-<?php
+ï»¿<?php
 require('fpdf.php');
 
 $red = array(255,0,0);
@@ -92,7 +92,7 @@ class phpToPDF extends FPDF
 						$labelSize=20,
 						$entrySize=10,
 						$tocfont='Times',
-						$label='Table des matières'
+						$label='Table des matiÃ¨res'
 						) {
 		//make toc at end
 		$this->stopPageNums();
@@ -229,7 +229,7 @@ class phpToPDF extends FPDF
 			$this->Sector($XDiag, $YDiag, $rayon, $angleDebut - $angle, 360);
 		}
 
-		//Légendes
+		//LÃ©gendes
 		if ($legend == 1)
 		{
 			$this->SetFont('Courier', '', 10);
@@ -286,7 +286,7 @@ class phpToPDF extends FPDF
 			$yval = $YDiag + ($i + 1) * $hBaton - $eBaton / 2;
 			$hval = $eBaton;
 			$this->Rect($xval, $yval, $lval, $hval, 'DF');
-			//Légende
+			//LÃ©gende
 			$this->SetXY(0, $yval);
 			$this->Cell($xval - $marge, $hval, $this->legends[$i],0,0,'R');
 			$i++;
@@ -1051,7 +1051,7 @@ class phpToPDF extends FPDF
 		$espaceX=25;
 		$espaceY=30;
 
-		// Si le min=max alors on change le nombre de découpage d'ordonnée
+		// Si le min=max alors on change le nombre de dÃ©coupage d'ordonnÃ©e
 		if ($datasY[0] == $datasY[1])
 			if ($datasY[0] == 0) $datasY[2] = 0;
 			else $datasY[2] = 1;
@@ -1084,7 +1084,7 @@ class phpToPDF extends FPDF
 			
 			break;
 			case 2:
-				// Mettre les deux valeurs en début et fin d'axe	
+				// Mettre les deux valeurs en dÃ©but et fin d'axe	
 				$this->Text($posX+$espaceX, $posY + $sizeY + 10, $datasX[0]);	
 				$this->Text($posX+$espaceX + $sizeX, $posY + $sizeY + 10, $datasX[1]);	
 			break;
@@ -1099,10 +1099,10 @@ class phpToPDF extends FPDF
 		$yInter = $sizeY / $datasY[2];
 		$valueInter = ($datasY[1] - $datasY[0]) / $datasY[2];
 
-		if ($datasY[2] == 5) //**** minY et maxY différents ****//
+		if ($datasY[2] == 5) //**** minY et maxY diffÃ©rents ****//
 			for ($i=0 ; $i <= $datasY[2] ; $i++)
 			{
-				// Mettre les $i valeurs entre le début et la fin de l'axe
+				// Mettre les $i valeurs entre le dÃ©but et la fin de l'axe
 				$this->Text($xPos, $yPos, $value);
 		
 				// Mettre les petites barres correspondantes...
@@ -1113,7 +1113,7 @@ class phpToPDF extends FPDF
 				if ($i==4) $value=$datasY[1];
 				else $value += $valueInter;
 			}
-		else //**** minY et maxY égaux --> 1 ou 2 intervalles au lieu de 5
+		else //**** minY et maxY Ã©gaux --> 1 ou 2 intervalles au lieu de 5
 		{
 			//**** Droite horizontale y=0
 			if ($datasY[0] == 0)
@@ -1175,7 +1175,7 @@ class phpToPDF extends FPDF
 			$this->SetDrawColor($droites[$i][2][0], $droites[$i][2][1], $droites[$i][2][2]);
 			$this->Line($posX+$espaceX, $y1, $posX+$sizeX, $y2);
 			
-			// ajouter la légende si elle doit être
+			// ajouter la lÃ©gende si elle doit Ãªtre
 			if ($droites[$i][3] != "")
 			{
 				$this->Line($legendX - 20, $legendY, $legendX - 3, $legendY);
@@ -1196,9 +1196,9 @@ class phpToPDF extends FPDF
 	}
 
 	//***********************************************************************************************************
-	// Pour écrire un texte dans ue case... [BUI] pour le style de la police et [[LCR]] pour le centrage éventuel
-	// Par défault, le texte sera normal et à gauche...
-	// Fonction destinée à dessiner un tableau dans un file.pdf
+	// Pour Ã©crire un texte dans ue case... [BUI] pour le style de la police et [[LCR]] pour le centrage Ã©ventuel
+	// Par dÃ©fault, le texte sera normal et Ã  gauche...
+	// Fonction destinÃ©e Ã  dessiner un tableau dans un file.pdf
 	function drawTableau(&$pdf, $tableType, $headerType, $headerDatas, $datasType, $datas)
 	{
 		$nbCol = count($headerDatas)/2;
@@ -1221,26 +1221,26 @@ class phpToPDF extends FPDF
 			$j = $nbCol+$i;
 			$header_type[$i]['TEXT'] = $headerDatas[$j];
 
-			// Si une donnée == 0 alors on affiche rien...
+			// Si une donnÃ©e == 0 alors on affiche rien...
 			if ($header_type[$i]['TEXT'] != "0") ;
 			else $header_type[$i]['TEXT'] = "";
 			
-			// par défaut, le texte est centré à gauche, non italic, non souligné et non gras.
-			// par défaut, les cellules ne sont pas fusionnées.
+			// par dÃ©faut, le texte est centrÃ© Ã  gauche, non italic, non soulignÃ© et non gras.
+			// par dÃ©faut, les cellules ne sont pas fusionnÃ©es.
 			$header_type[$i]['T_TYPE'] = '';
 			$header_type[$i]['T_ALIGN'] = '';		
 			$header_type[$i]['COLSPAN'] = "1";
 		}
 
-		// Si l'utilisateur veut un alignement spécifique pour la première colonne. Sinon, T_ALIGN  prend le dessus...
+		// Si l'utilisateur veut un alignement spÃ©cifique pour la premiÃ¨re colonne. Sinon, T_ALIGN  prend le dessus...
 		if (isset($headerType['T_ALIGN_COL0']))
 			$header_type[0]['T_ALIGN'] = $headerType['T_ALIGN_COL0'];
 
-		// Si l'utilisateur veut un fond coloré spécifique  pour la première colonne. Sinon, BG_COLOR  prend le dessus...
+		// Si l'utilisateur veut un fond colorÃ© spÃ©cifique  pour la premiÃ¨re colonne. Sinon, BG_COLOR  prend le dessus...
 		if (isset($headerType['BG_COLOR_COL0']))
 			$header_type[0]['BG_COLOR'] = $headerType['BG_COLOR_COL0'];
 				
-		// Si l'utilisateur précise un type ou un alignement pour une cellule précise du tableau, on l'applique ici
+		// Si l'utilisateur prÃ©cise un type ou un alignement pour une cellule prÃ©cise du tableau, on l'applique ici
 		// Il faut utiliser les balises [I], [B], [U] pour Italic, Bold et Underline
 		// Il faut utiliser les balises [L], [C], [R] pour left, centered et rigth
 		for($i=0; $i<$nbCol; $i++) 
@@ -1254,7 +1254,7 @@ class phpToPDF extends FPDF
 				else
 				{
 					//echo "balise = " . $balise . "<br>";
-					// On teste les différentes balises pour ajuster la cellule.
+					// On teste les diffÃ©rentes balises pour ajuster la cellule.
 					if (strpos($balise, "I") === FALSE) ;
 					else $header_type[$i]['T_TYPE'] .= 'I';
 					if (strpos($balise, "B") === FALSE) ;
@@ -1284,7 +1284,7 @@ class phpToPDF extends FPDF
 		}
 		
 
-		// Test si l'utilisateur veut fusionner DEUX cellules dans le header de son tableau. Il doit mettre "COLSPAN2" dans la première cellule à fusionner.
+		// Test si l'utilisateur veut fusionner DEUX cellules dans le header de son tableau. Il doit mettre "COLSPAN2" dans la premiÃ¨re cellule Ã  fusionner.
 		for($i=0 ; $i<$nbCol ; $i++)
 		{
 			$k=$nbCol+$i;
@@ -1314,13 +1314,13 @@ class phpToPDF extends FPDF
 		for ($i=0 ; $i<count($datas) ; $i+=$nbCol)
 		{
 			//*********************************************************************
-			// Ce qui suit est valable pour la première colonne du tableau
+			// Ce qui suit est valable pour la premiÃ¨re colonne du tableau
 			//*********************************************************************
-			// si l'utilisateur a précisé un alignement pour la première colonne, on l'applique ici
+			// si l'utilisateur a prÃ©cisÃ© un alignement pour la premiÃ¨re colonne, on l'applique ici
 			if (isset($datasType['T_ALIGN_COL0']))
 				$data[0]['T_ALIGN'] = $datasType['T_ALIGN_COL0'];
 				
-			// Si l'utilisateur a précisé une couleur de fond pour la première colonne, on l'applique ici.
+			// Si l'utilisateur a prÃ©cisÃ© une couleur de fond pour la premiÃ¨re colonne, on l'applique ici.
 			if (isset($datasType['BG_COLOR_COL0']))
 				$data[0]['BG_COLOR'] = $datasType['BG_COLOR_COL0'];
 				
@@ -1331,17 +1331,17 @@ class phpToPDF extends FPDF
 				$data[$k]['T_SIZE'] = $datasType['T_SIZE'];
 				$data[$k]['LN_SIZE'] = $datasType['LN_SIZE'];
 				
-				// par défaut, le texte est centré à gauche, non italic, non souligné et non gras.
-				// par défaut, les cellules ne sont pas fusionnées.
+				// par dÃ©faut, le texte est centrÃ© Ã  gauche, non italic, non soulignÃ© et non gras.
+				// par dÃ©faut, les cellules ne sont pas fusionnÃ©es.
 				$data[$k]['T_TYPE'] = '';
 				$data[$k]['T_ALIGN'] = '';		
 				$data[$k]['COLSPAN'] = "1";
 					
-				// Si l'utilisateur a précisé une couleur de fond pour les autres colonnes, on l'applique ici.
+				// Si l'utilisateur a prÃ©cisÃ© une couleur de fond pour les autres colonnes, on l'applique ici.
 				if ( (isset($datasType['BG_COLOR'])) && ($k!=0) )
 					$data[$k]['BG_COLOR'] = $datasType['BG_COLOR'];
 				
-				// Si l'utilisateur précise un type ou un alignement pour une cellule précise du tableau, on l'applique ici
+				// Si l'utilisateur prÃ©cise un type ou un alignement pour une cellule prÃ©cise du tableau, on l'applique ici
 				// Il faut utiliser les balises [I], [B], [U] pour Italic, Bold et Underline
 				// Il faut utiliser les balises [L], [C], [R] pour left, centered et rigth
 				if (sscanf($data[$k]['TEXT'], "[%[a-zA-Z]]%s", $balise, $reste) != 0)
@@ -1353,7 +1353,7 @@ class phpToPDF extends FPDF
 					else
 					{
 						//echo "balise = " . $balise . "<br>";
-						// On teste les différentes balises pour ajuster la cellule.
+						// On teste les diffÃ©rentes balises pour ajuster la cellule.
 						if (strpos($balise, "I") === FALSE) ;
 						else $data[$k]['T_TYPE'] .= 'I';
 						if (strpos($balise, "B") === FALSE) ;
@@ -1372,12 +1372,12 @@ class phpToPDF extends FPDF
 					$data[$k]['TEXT'] = str_replace("[".$balise."]", "", $data[$k]['TEXT']);
 				}
 
-				// Si la valeur de la cellule est 0, le choix a été fait ICI de ne rien mettre dans la cellule.
+				// Si la valeur de la cellule est 0, le choix a Ã©tÃ© fait ICI de ne rien mettre dans la cellule.
 				if ($data[$k]['TEXT'] == "0")
 					$data[$k]['TEXT'] ="";
 					
 				// Test si l'utilisateur veut fusionner deux cellules dans le header de son tableau. Il doit mettre le contenu
-				// de la cellule fusionnée dans la première cellule et "COLSPAN2" dans la deuxième cellule.
+				// de la cellule fusionnÃ©e dans la premiÃ¨re cellule et "COLSPAN2" dans la deuxiÃ¨me cellule.
 				if ( ($k<$nbCol) && ($data[$k]['TEXT'] === "COLSPAN2") )
 				{
 					$k_1 = $k-1;

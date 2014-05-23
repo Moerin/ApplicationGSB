@@ -3,7 +3,7 @@
  * Regroupe les fonctions d'accès aux données.
  * 
  * @package default
- * @author Arthur Martin
+ * @author Arthur Martin, Sebastien Charret
  * @todo Fonctions retournant plusieurs lignes sont à réécrire.
  */
 
