@@ -248,7 +248,7 @@ function ajouterFicheFrais($idCnx, $unMois, $unIdVisiteur) {
  * @param string $unIdVisiteur id visiteur  
  * @return string texte de la requète select
  */                                                 
-function obtenirReqMoisFicheFraisCrée($unIdVisiteur) {
+function obtenirReqMoisFicheFraisCree($unIdVisiteur) {
     $req = "select fichefrais.mois as mois from  fichefrais where fichefrais.idvisiteur ='"
         . $unIdVisiteur . "' order by fichefrais.mois desc ";
     return $req ;
@@ -263,7 +263,7 @@ function obtenirReqMoisFicheFraisCrée($unIdVisiteur) {
  * @param string $unIdVisiteur id visiteur  
  * @return string texte de la requète select
  */                                                 
-function obtenirReqMoisFicheFraisCloturée($unIdVisiteur) {
+function obtenirReqMoisFicheFraisCloturee($unIdVisiteur) {
     $req = "select fichefrais.mois as mois from  fichefrais where fichefrais.idvisiteur ='"
         . $unIdVisiteur . "' and idEtat ='CL' order by fichefrais.mois desc ";
     return $req ;
@@ -279,7 +279,7 @@ function obtenirReqMoisFicheFraisCloturée($unIdVisiteur) {
  * @param string $unEtat id etat 
  * @return string texte de la requète select
  */                                                 
-function obtenirReqMoisFicheFraisValidée($unIdVisiteur) {
+function obtenirReqMoisFicheFraisValidee($unIdVisiteur) {
     $req = "select fichefrais.mois as mois, fichefrais.idEtat as etat from  fichefrais where fichefrais.idvisiteur ='"
         . $unIdVisiteur . "' and not idEtat = 'CL' and not idEtat = 'CR' and not idEtat = 'RB' order by fichefrais.mois desc ";
     return $req ;

@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**
  * Script de contrôle et d'affichage du cas d'utilisation "Valider fiche de frais"
  * @package default
@@ -122,7 +122,7 @@ if ($etapeChoisi == "choixVisiteur") {
                 // Dans le cas où aucun visiteur n'a été choisi on le signifie dans le sélection de liste
                 if ( $visiteurChoisi == "") {
                     ?>
-                    <option value="-1"> Sélectionner un visiteur médical </option>
+                    <option value="-1"> Sélectionner un visiteur medical </option>
                     <?php
                 }
                 $req = obtenirReqListeUtilisateur();
@@ -151,7 +151,7 @@ if ($etapeChoisi == "choixVisiteur") {
                 <input type="hidden" name="lstVisiteur" value="<?php echo $visiteurChoisi; ?>" />
                 <?php
                 // On affiche les mois pour lesquels le visiteur dipose d'une fiche de frais
-                $req = obtenirReqMoisFicheFraisCloturée($visiteurChoisi); // on recupère les mois ou la saisie est cloturée = 'CL'
+                $req = obtenirReqMoisFicheFraisCloturee($visiteurChoisi); // on recupère les mois ou la saisie est cloturée = 'CL'
                 $idJeuMois = mysql_query($req, $idConnexion);
                 $lgMois = mysql_fetch_assoc($idJeuMois);
                 // ref cas utilisation 4-a Si il n'existe pas de fiche de frais on affiche l'erreur "Pas de fiche de frais pour ce visiteur ce mois"
@@ -219,7 +219,9 @@ if ($etapeChoisi == "choixVisiteur") {
         </p>
         <table id="tableF">
             <tr>
-                <th>Repas midi</th><th>Nuitée</th><th>Etape</th>
+                <th>Etape</th>
+                <th>Repas midi</th>
+                <th>Nuitée</th>
                 <th>Véhicule 4CV Diesel</th>
                 <th>Véhicule 4CV Essence</th>
                 <th>Véhicule 5/6CV Diesel</th>
@@ -233,16 +235,16 @@ if ($etapeChoisi == "choixVisiteur") {
                     if ($lgEltsForfait["idFraisForfait"] == "ETP") {
                         $etp = $lgEltsForfait["quantite"];
                         $montantElementForfaitise += $etp * $lgEltsForfait["montant"];
-                    } elseif ($lgEltsForfait["idFraisForfait"] == "KM4d") {
-                        $km4d = $lgEltsForfait["quantite"];
-                        $montantElementForfaitise += $km4d * $lgEltsForfait["montant"];
-                    } elseif ($lgEltsForfait["idFraisForfait"] == "NUI") {
-                        $nui = $lgEltsForfait["quantite"];
-                        $montantElementForfaitise += $nui * $lgEltsForfait["montant"];
                     } elseif ($lgEltsForfait["idFraisForfait"] == "REP") {
                         $rep = $lgEltsForfait["quantite"];
                         $montantElementForfaitise += $rep * $lgEltsForfait["montant"];
-                     } elseif ($lgEltsForfait["idFraisForfait"] == "KM4e") {
+                    } elseif ($lgEltsForfait["idFraisForfait"] == "NUI") {
+                        $nui = $lgEltsForfait["quantite"];
+                        $montantElementForfaitise += $nui * $lgEltsForfait["montant"];
+                    } elseif ($lgEltsForfait["idFraisForfait"] == "KM4d") {
+                        $km4d = $lgEltsForfait["quantite"];
+                        $montantElementForfaitise += $km4d * $lgEltsForfait["montant"];
+                    } elseif ($lgEltsForfait["idFraisForfait"] == "KM4e") {
                         $km4e = $lgEltsForfait["quantite"];
                         $montantElementForfaitise += $km4e * $lgEltsForfait["montant"];
                     } elseif ($lgEltsForfait["idFraisForfait"] == "KM56d") {

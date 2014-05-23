@@ -54,7 +54,7 @@ function estDate($date) {
  * @return string la date au format anglais aaaa-mm-jj
 */
 function convertirDateFrancaisVersAnglais($date){
-    list($jour,$mois,$annee) = explode('/',$date);
+    @list($jour,$mois,$annee) = explode('/',$date);
     return date("Y-m-d", mktime(0, 0, 0, $mois, $jour, $annee));
 }
 
@@ -65,7 +65,7 @@ function convertirDateFrancaisVersAnglais($date){
  * @return string la date au format format français jj/mm/aaaa
 */
 function convertirDateAnglaisVersFrancais($date){
-    list($annee,$mois,$jour) = explode('-',$date);
+    @list($annee,$mois,$jour) = explode('-',$date);
     return date("d/m/Y", time(0, 0, 0, $mois, $jour, $annee)); // remplacer time par mktime
 }
 
