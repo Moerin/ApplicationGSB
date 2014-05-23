@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Script de contrôle et d'affichage du cas d'utilisation "Valider fiche de frais"
  * @package default
@@ -258,12 +258,12 @@ if ($etapeChoisi == "choixVisiteur") {
                 }
                 ?>
                 <td><input type="text" id="idETP" name="txtEltsForfait[ETP]" value="<?php echo $etp; ?>" /></td>
+                <td><input type="text" id="idREP" name="txtEltsForfait[REP]" value="<?php echo $rep; ?>" /></td>
+                <td><input type="text" id="idNUI" name="txtEltsForfait[NUI]" value="<?php echo $nui; ?>" </td>
                 <td><input type="text" id="idKM4d" name="txtEltsForfait[KM4d]" value="<?php echo $km4d; ?>" </td>
                 <td><input type="text" id="idKM4e" name="txtEltsForfait[KM4e]" value="<?php echo $km4e; ?>" </td>
                 <td><input type="text" id="idKM56d" name="txtEltsForfait[KM56d]" value="<?php echo $km56d; ?>" </td>
-                <td><input type="text" id="idKM56e" name="txtEltsForfait[KM56e]" value="<?php echo $km56e; ?>" </td>
-                <td><input type="text" id="idNUI" name="txtEltsForfait[NUI]" value="<?php echo $nui; ?>" </td>
-                <td><input type="text" id="idREP" name="txtEltsForfait[REP]" value="<?php echo $rep; ?>" /></td>
+                <td><input type="text" id="idKM56e" name="txtEltsForfait[KM56e]" value="<?php echo $km56e; ?>" </td>       
                 <td>
                     <div id="actionsFraisForfait" class="actions">
                            <img src="images/actualiserIcon.png" id="lkActualiserLigneFraisForfait" class="icon"
