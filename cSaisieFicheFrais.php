@@ -31,7 +31,7 @@
   $dateHF = lireDonnee("txtDateHF", "");
   $libelleHF = lireDonnee("txtLibelleHF", "");
   $montantHF = lireDonnee("txtMontantHF", "");
- 
+
   // structure de décision sur les différentes étapes du cas d'utilisation
   if ($etape == "validerSaisie") { 
       // l'utilisateur valide les éléments forfaitisés         
@@ -55,8 +55,8 @@
       }
   }
   else { // on ne fait rien, étape non prévue 
-  
-  }                                  
+
+  }
 ?>
   <!-- Division principale -->
   <div id="contenu">
