@@ -140,10 +140,10 @@
                 <td><?php echo $lgEltHorsForfait["montant"] ; ?></td>
 
                 <td>
-                    <a href="?etape=validerSuppressionLigneHF&amp;idLigneHF=<?php echo $lgEltHorsForfait["id"]; ?>" 
+                    <img href="?etape=validerSuppressionLigneHF&amp;idLigneHF=<?php echo $lgEltHorsForfait["id"]; ?>" 
                          class="icon" title="Refuser la ligne hors forfait"
-                         onclick="return confirm('Voulez-vous vraiment supprimer cette ligne de frais hors forfait ?');">
-                        <img alt="icone Supprimer" src="images/reinitialiserIcon.png"></a>
+                         onclick="return confirm('Voulez-vous vraiment supprimer cette ligne de frais hors forfait ?');"
+                        alt="icone Supprimer" src="images/reinitialiserIcon.png">
                     <!--<a href="?etape=validerSuppressionLigneHF&amp;idLigneHF=<?php echo $lgEltHorsForfait["id"]; ?>"
                     onclick="return confirm('Voulez-vous vraiment supprimer cette ligne de frais hors forfait ?');"
                     title="Supprimer la ligne de frais hors forfait">Supprimer</a>--></td>
