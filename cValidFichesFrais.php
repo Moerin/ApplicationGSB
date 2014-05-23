@@ -195,7 +195,7 @@ if ($etapeChoisi == "choixVisiteur") {
         <p class="titre">&nbsp;</p>
     <?php
     }
-    // Le formulaire de gestion des frais n'est visible que si le visituer et le mois on été sélectionné
+	// Le formulaire de gestion des frais n'est visible que si le visiteur et le mois ont été sélectionné
     if ($visiteurChoisi != "" && $moisChoisi !== "") {
     ?>
     <?php 
@@ -307,8 +307,10 @@ if ($etapeChoisi == "choixVisiteur") {
                 <th>Date</th><th>Libellé</th><th>Montant</th><th>Action</th>
             </tr>
             <tr>
-                <td><input id="idDate<?php echo $lgEltsHorsForfait["id"]?>" name="txtEltsHorsForfait[date]" value="<?php echo convertirDateAnglaisVersFrancais($lgEltsHorsForfait["date"]); ?>" /></td>
-                <td >
+                <td>
+                    <input id="idDate<?php echo $lgEltsHorsForfait["id"]?>" name="txtEltsHorsForfait[date]" value="<?php echo convertirDateAnglaisVersFrancais($lgEltsHorsForfait["date"]); ?>" />
+                </td>
+                <td>
                 <?php
                 // Si le libelle REFUSÉ : est présent on barre le texte sinon on l'affiche normalement
                 if (strpos($lgEltsHorsForfait["libelle"], "REFUSÉ : ") === false) {
@@ -336,9 +338,9 @@ if ($etapeChoisi == "choixVisiteur") {
                                    '<?php echo filtrerChainePourNavig($lgEltsHorsForfait["libelle"]); ?>',
                                    '<?php echo $lgEltsHorsForfait["montant"]; ?>')"
                             title="Actualiser la ligne hors forfait"  title="Actualiser la ligne de frais hors forfait" />
-                        <img src="images/reinitialiserIcon.png" id="lkReinitialiserLigneFraisHF" class="icon"
+                        <!--<img src="images/reinitialiserIcon.png" id="lkReinitialiserLigneFraisHF" class="icon"
                             alt="icone Réinitialiser" onclick="reinitialiserLigneFraisHorsForfait('<?php echo $lgEltsHorsForfait['id']; ?>');" 
-                            title="Rénitialiser la ligne hors forfait" />
+                            title="Rénitialiser la ligne hors forfait" />-->
                             <?php
                             // L'option "Supprimer" n'est proposée que si les frais n'ont pas déjà été refusés
                             if (strpos($lgEltsHorsForfait['libelle'], 'REFUSÉ : ') === false) {
