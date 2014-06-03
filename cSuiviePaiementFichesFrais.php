@@ -93,7 +93,7 @@ if ($etapeChoisi == "choixVisiteur") {
                 <input type="hidden" name="lstVisiteur" value="<?php echo $visiteurChoisi; ?>" />
                 
                 <?php
-                $req = obtenirReqMoisFicheFraisValidée($visiteurChoisi);
+                $req = obtenirReqMoisFicheFraisValidee($visiteurChoisi);
                 $idJeuFiches = mysql_query($req, $idConnexion);
                 $lgFiche = mysql_fetch_assoc($idJeuFiches);
                 /* On vérifie que l'utilisateur possède bien des fiches validée, mise en paiement ou remboursée
@@ -126,7 +126,8 @@ if ($etapeChoisi == "choixVisiteur") {
                         if ($etatFiche == "VA") {
                         ?>    
                         <optgroup label="Validée">
-                            <option value="<?php echo $mois;?>"><?php echo $noMois . ' ' . $libelleMois . ' ' . $annee;?></option>
+                            <option value="<?php echo $mois;?>"<?php 
+                    if ($moisChoisi == $lgFiche["mois"]) { ?> selected="selected"<?php } ?>><?php echo $noMois . ' ' . $libelleMois . ' ' . $annee;?></option>
                         </optgroup>
                         <?php    
                         }
