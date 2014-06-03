@@ -154,7 +154,7 @@ function existeFicheFrais($idCnx, $unMois, $unIdVisiteur) {
     $idJeuRes = mysql_query($requete, $idCnx) or die(mysql_error());  
     $ligne = false ;
     if ( $idJeuRes ) {
-        $ligne = mysql_fetch_assoc($idJeuRes) or die(mysql_error());
+        $ligne = mysql_fetch_assoc($idJeuRes);
         mysql_free_result($idJeuRes) or die(mysql_error());
     }        
     
@@ -219,7 +219,7 @@ function ajouterFicheFrais($idCnx, $unMois, $unIdVisiteur) {
     $requete = "insert into fichefrais (idVisiteur, mois, nbJustificatifs, montantValide, idEtat, dateModif) values ('" 
               . $unIdVisiteur 
               . "','" . $unMois . "',0,NULL, 'CR', '" . date("Y-m-d") . "')";
-    mysql_query($requete, $idCnx) or die(mysql_error());
+    mysql_query($requete, $idCnx);
     
     // ajout des éléments forfaitisés
     $requete = "select id from fraisforfait";

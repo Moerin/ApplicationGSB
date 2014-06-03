@@ -3,9 +3,9 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Feb 12, 2014 at 01:12 AM
+-- Generation Time: Jun 03, 2014 at 11:00 PM
 -- Server version: 5.5.24-log
--- PHP Version: 5.3.13
+-- PHP Version: 5.4.3
 
 SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -17,7 +17,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8 */;
 
 --
--- Database: `gsb_frais`
+-- Database: `moerin_database`
 --
 
 -- --------------------------------------------------------
@@ -30,7 +30,7 @@ CREATE TABLE IF NOT EXISTS `etat` (
   `id` char(2) NOT NULL,
   `libelle` varchar(30) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `etat`
@@ -58,19 +58,22 @@ CREATE TABLE IF NOT EXISTS `fichefrais` (
   `idEtat` char(2) DEFAULT 'CR',
   PRIMARY KEY (`idVisiteur`,`mois`),
   KEY `idEtat` (`idEtat`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `fichefrais`
 --
 
 INSERT INTO `fichefrais` (`idVisiteur`, `mois`, `nbJustificatifs`, `montantValide`, `dateModif`, `idEtat`) VALUES
-('a131', '201312', 4, '3422.20', '2014-02-12', 'VA'),
-('a131', '201401', 0, '13016.20', '2014-02-12', 'VA'),
-('a131', '201402', 0, NULL, '2014-02-01', 'CR'),
+('a131', '201312', 4, '1334.20', '2014-02-12', 'VA'),
+('a131', '201401', 0, '2336.20', '2014-02-12', 'VA'),
+('a131', '201402', 0, NULL, '2014-05-11', 'CL'),
+('a131', '201404', 2, '1495.31', '2014-05-12', 'VA'),
+('a131', '201405', 0, NULL, '2014-06-03', 'CL'),
+('a131', '201406', 0, NULL, '2014-06-03', 'CR'),
 ('a17', '201401', 0, NULL, '2014-02-02', 'CL'),
-('a17', '201402', 0, NULL, '2014-02-01', 'CR'),
-('a55', '201402', 0, NULL, '2014-02-08', 'CR');
+('a17', '201402', 0, NULL, '2014-05-11', 'CL'),
+('a55', '201402', 0, NULL, '2014-05-11', 'CL');
 
 -- --------------------------------------------------------
 
@@ -82,7 +85,7 @@ CREATE TABLE IF NOT EXISTS `fonction` (
   `id` int(1) NOT NULL DEFAULT '0',
   `libelleFonction` char(20) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `fonction`
@@ -103,7 +106,7 @@ CREATE TABLE IF NOT EXISTS `fraisforfait` (
   `libelle` char(32) DEFAULT NULL,
   `montant` decimal(5,2) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `fraisforfait`
@@ -131,7 +134,7 @@ CREATE TABLE IF NOT EXISTS `lignefraisforfait` (
   `quantite` int(11) DEFAULT NULL,
   PRIMARY KEY (`idVisiteur`,`mois`,`idFraisForfait`),
   KEY `idFraisForfait` (`idFraisForfait`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `lignefraisforfait`
@@ -145,12 +148,12 @@ INSERT INTO `lignefraisforfait` (`idVisiteur`, `mois`, `idFraisForfait`, `quanti
 ('a131', '201312', 'KM56e', 0),
 ('a131', '201312', 'NUI', 0),
 ('a131', '201312', 'REP', 0),
-('a131', '201401', 'ETP', 100),
+('a131', '201401', 'ETP', 8),
 ('a131', '201401', 'KM4d', 0),
 ('a131', '201401', 'KM4e', 10),
 ('a131', '201401', 'KM56d', 0),
 ('a131', '201401', 'KM56e', 0),
-('a131', '201401', 'NUI', 22),
+('a131', '201401', 'NUI', 15),
 ('a131', '201401', 'REP', 10),
 ('a131', '201402', 'ETP', 3),
 ('a131', '201402', 'KM4d', 12),
@@ -159,21 +162,41 @@ INSERT INTO `lignefraisforfait` (`idVisiteur`, `mois`, `idFraisForfait`, `quanti
 ('a131', '201402', 'KM56e', 0),
 ('a131', '201402', 'NUI', 6),
 ('a131', '201402', 'REP', 20),
-('a17', '201401', 'ETP', 12),
-('a17', '201401', 'KM4e', 25),
-('a17', '201401', 'NUI', 6),
+('a131', '201404', 'ETP', 3),
+('a131', '201404', 'KM4d', 75),
+('a131', '201404', 'KM4e', 0),
+('a131', '201404', 'KM56d', 35),
+('a131', '201404', 'KM56e', 3),
+('a131', '201404', 'NUI', 3),
+('a131', '201404', 'REP', 3),
+('a131', '201405', 'ETP', 5),
+('a131', '201405', 'KM4d', 100),
+('a131', '201405', 'KM4e', 0),
+('a131', '201405', 'KM56d', 0),
+('a131', '201405', 'KM56e', 36),
+('a131', '201405', 'NUI', 3),
+('a131', '201405', 'REP', 7),
+('a131', '201406', 'ETP', 0),
+('a131', '201406', 'KM4d', 0),
+('a131', '201406', 'KM4e', 0),
+('a131', '201406', 'KM56d', 0),
+('a131', '201406', 'KM56e', 0),
+('a131', '201406', 'NUI', 0),
+('a131', '201406', 'REP', 0),
+('a17', '201401', 'ETP', 0),
+('a17', '201401', 'KM4d', 49),
+('a17', '201401', 'KM4e', 22),
+('a17', '201401', 'KM56d', 0),
+('a17', '201401', 'KM56e', 0),
+('a17', '201401', 'NUI', 5),
 ('a17', '201401', 'REP', 0),
-('a17', '201402', 'ETP', 0),
+('a17', '201402', 'ETP', 3),
+('a17', '201402', 'KM4d', 43),
 ('a17', '201402', 'KM4e', 0),
-('a17', '201402', 'NUI', 0),
-('a17', '201402', 'REP', 0),
-('a55', '201402', 'ETP', 120),
-('a55', '201402', 'KM4d', 12),
-('a55', '201402', 'KM4e', 0),
-('a55', '201402', 'KM56d', 45),
-('a55', '201402', 'KM56e', 0),
-('a55', '201402', 'NUI', 12),
-('a55', '201402', 'REP', 2);
+('a17', '201402', 'KM56d', 0),
+('a17', '201402', 'KM56e', 0),
+('a17', '201402', 'NUI', 5),
+('a17', '201402', 'REP', 7);
 
 -- --------------------------------------------------------
 
@@ -190,7 +213,7 @@ CREATE TABLE IF NOT EXISTS `lignefraishorsforfait` (
   `montant` decimal(10,2) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `idVisiteur` (`idVisiteur`,`mois`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=7 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=9 ;
 
 --
 -- Dumping data for table `lignefraishorsforfait`
@@ -199,9 +222,10 @@ CREATE TABLE IF NOT EXISTS `lignefraishorsforfait` (
 INSERT INTO `lignefraishorsforfait` (`id`, `idVisiteur`, `mois`, `libelle`, `date`, `montant`) VALUES
 (2, 'a131', '201312', 'Karting', '2013-12-07', '100.00'),
 (3, 'a131', '201312', 'Patinoire', '2013-12-07', '2.20'),
-(4, 'a131', '201312', 'BlaBla', '2013-12-07', '1000.00'),
-(5, 'a131', '201312', 'Piscine', '2013-11-30', '1000.00'),
-(6, 'a55', '201402', 'Restaurant docteur', '2014-02-02', '50.00');
+(5, 'a131', '201312', 'Piscine', '2013-11-30', '12.00'),
+(6, 'a55', '201402', 'Restaurant Docteur Simon', '2014-02-02', '50.00'),
+(7, 'a131', '201405', 'Conference Doliprane', '2014-05-12', '50.00'),
+(8, 'a131', '201404', 'Formation Besoin Client', '2014-04-12', '789.00');
 
 -- --------------------------------------------------------
 
@@ -223,7 +247,7 @@ CREATE TABLE IF NOT EXISTS `utilisateur` (
   `hash` int(1) DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `fk_fonction` (`idFonction`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `utilisateur`
@@ -276,12 +300,6 @@ ALTER TABLE `fichefrais`
 ALTER TABLE `lignefraisforfait`
   ADD CONSTRAINT `lignefraisforfait_ibfk_1` FOREIGN KEY (`idVisiteur`, `mois`) REFERENCES `fichefrais` (`idVisiteur`, `mois`),
   ADD CONSTRAINT `lignefraisforfait_ibfk_2` FOREIGN KEY (`idFraisForfait`) REFERENCES `fraisforfait` (`id`);
-
---
--- Constraints for table `lignefraishorsforfait`
---
-ALTER TABLE `lignefraishorsforfait`
-  ADD CONSTRAINT `lignefraishorsforfait_ibfk_1` FOREIGN KEY (`idVisiteur`, `mois`) REFERENCES `fichefrais` (`idVisiteur`, `mois`);
 
 --
 -- Constraints for table `utilisateur`
