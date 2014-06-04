@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Jun 03, 2014 at 11:00 PM
+-- Generation Time: Jun 04, 2014 at 07:41 PM
 -- Server version: 5.5.24-log
 -- PHP Version: 5.4.3
 
@@ -67,12 +67,13 @@ CREATE TABLE IF NOT EXISTS `fichefrais` (
 INSERT INTO `fichefrais` (`idVisiteur`, `mois`, `nbJustificatifs`, `montantValide`, `dateModif`, `idEtat`) VALUES
 ('a131', '201312', 4, '1334.20', '2014-02-12', 'VA'),
 ('a131', '201401', 0, '2336.20', '2014-02-12', 'VA'),
-('a131', '201402', 0, NULL, '2014-05-11', 'CL'),
+('a131', '201402', 0, '1334.84', '2014-06-04', 'VA'),
 ('a131', '201404', 2, '1495.31', '2014-05-12', 'VA'),
-('a131', '201405', 0, NULL, '2014-06-03', 'CL'),
+('a131', '201405', 0, '1091.12', '2014-06-04', 'RB'),
 ('a131', '201406', 0, NULL, '2014-06-03', 'CR'),
-('a17', '201401', 0, NULL, '2014-02-02', 'CL'),
+('a17', '201401', 2, NULL, '2014-02-02', 'CL'),
 ('a17', '201402', 0, NULL, '2014-05-11', 'CL'),
+('a17', '201406', 0, NULL, '2014-06-04', 'CR'),
 ('a55', '201402', 0, NULL, '2014-05-11', 'CL');
 
 -- --------------------------------------------------------
@@ -114,11 +115,11 @@ CREATE TABLE IF NOT EXISTS `fraisforfait` (
 
 INSERT INTO `fraisforfait` (`id`, `libelle`, `montant`) VALUES
 ('ETP', 'Forfait Etape', '110.00'),
-('KM4d', 'Frais Kilométrique 4CV Diesel', '0.52'),
-('KM4e', 'Frais Kilométrique 4CV Essence', '0.62'),
-('KM56d', 'Frais Kilométrique 5/6CV Diesel', '0.58'),
-('KM56e', 'Frais Kilométrique 5/6CV Essence', '0.67'),
-('NUI', 'Nuitée Hôtel', '80.00'),
+('KM4d', 'Frais Kilométriques 4CV Diesel', '0.52'),
+('KM4e', 'Frais Kilométriques 4CV Essence', '0.62'),
+('KM56d', 'Frais Kilométriques 5/6CV Diesel', '0.58'),
+('KM56e', 'Frais Kilométriques 5/6CV Essenc', '0.67'),
+('NUI', 'Nuitée(s) Hôtel', '80.00'),
 ('REP', 'Repas Restaurant', '25.00');
 
 -- --------------------------------------------------------
@@ -176,13 +177,13 @@ INSERT INTO `lignefraisforfait` (`idVisiteur`, `mois`, `idFraisForfait`, `quanti
 ('a131', '201405', 'KM56e', 36),
 ('a131', '201405', 'NUI', 3),
 ('a131', '201405', 'REP', 7),
-('a131', '201406', 'ETP', 0),
-('a131', '201406', 'KM4d', 0),
+('a131', '201406', 'ETP', 2),
+('a131', '201406', 'KM4d', 100),
 ('a131', '201406', 'KM4e', 0),
 ('a131', '201406', 'KM56d', 0),
-('a131', '201406', 'KM56e', 0),
-('a131', '201406', 'NUI', 0),
-('a131', '201406', 'REP', 0),
+('a131', '201406', 'KM56e', 150),
+('a131', '201406', 'NUI', 2),
+('a131', '201406', 'REP', 3),
 ('a17', '201401', 'ETP', 0),
 ('a17', '201401', 'KM4d', 49),
 ('a17', '201401', 'KM4e', 22),
@@ -196,7 +197,14 @@ INSERT INTO `lignefraisforfait` (`idVisiteur`, `mois`, `idFraisForfait`, `quanti
 ('a17', '201402', 'KM56d', 0),
 ('a17', '201402', 'KM56e', 0),
 ('a17', '201402', 'NUI', 5),
-('a17', '201402', 'REP', 7);
+('a17', '201402', 'REP', 7),
+('a17', '201406', 'ETP', 1),
+('a17', '201406', 'KM4d', 15),
+('a17', '201406', 'KM4e', 0),
+('a17', '201406', 'KM56d', 12),
+('a17', '201406', 'KM56e', 0),
+('a17', '201406', 'NUI', 1),
+('a17', '201406', 'REP', 100);
 
 -- --------------------------------------------------------
 
@@ -213,7 +221,7 @@ CREATE TABLE IF NOT EXISTS `lignefraishorsforfait` (
   `montant` decimal(10,2) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `idVisiteur` (`idVisiteur`,`mois`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=9 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=32 ;
 
 --
 -- Dumping data for table `lignefraishorsforfait`
@@ -224,8 +232,9 @@ INSERT INTO `lignefraishorsforfait` (`id`, `idVisiteur`, `mois`, `libelle`, `dat
 (3, 'a131', '201312', 'Patinoire', '2013-12-07', '2.20'),
 (5, 'a131', '201312', 'Piscine', '2013-11-30', '12.00'),
 (6, 'a55', '201402', 'Restaurant Docteur Simon', '2014-02-02', '50.00'),
-(7, 'a131', '201405', 'Conference Doliprane', '2014-05-12', '50.00'),
-(8, 'a131', '201404', 'Formation Besoin Client', '2014-04-12', '789.00');
+(7, 'a131', '201405', 'REFUSÉ : Conference Doliprane', '2014-06-04', '50.00'),
+(8, 'a131', '201404', 'Formation Besoin Client', '2014-04-12', '789.00'),
+(30, 'a131', '201406', 'Achats Fournitures', '2014-06-03', '31.20');
 
 -- --------------------------------------------------------
 

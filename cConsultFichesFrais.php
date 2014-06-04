@@ -88,7 +88,7 @@
     <em><?php echo $tabFicheFrais["libelleEtat"]; ?> </em>
     depuis le <em><?php echo $tabFicheFrais["dateModif"]; ?></em></h3>
       
-    <form id="formCréerPDF" method="post" action="cCreerPDF.php">
+    <form id="formCréerPDF" method="post" action="cCreerPDF.php" target="_blank">
         <input type="hidden" name="idVisiteur" value="<?php echo obtenirIdUserConnecte(); ?>" />
         <input type="hidden" name="idMois" value="<?php echo $moisSaisi; ?>" />
         <img src="images/pdfIcon.png" id="lkCreerFicheFraisPdf" class="icon"
@@ -170,9 +170,9 @@
             while ( is_array($lgEltHorsForfait) ) {
             ?>
                 <tr>
-                   <td><?php echo $lgEltHorsForfait["date"] ; ?></td>
-                   <td><?php echo filtrerChainePourNavig($lgEltHorsForfait["libelle"]) ; ?></td>
-                   <td><?php echo $lgEltHorsForfait["montant"] ; ?></td>
+                   <td><?php echo $lgEltHorsForfait["date"];?></td>
+                   <td><?php echo filtrerChainePourNavig($lgEltHorsForfait["libelle"]);?></td>
+                   <td><?php echo $lgEltHorsForfait["montant"];?> €</td>
                 </tr>
             <?php
                 $lgEltHorsForfait = mysql_fetch_assoc($idJeuEltsHorsForfait);

@@ -6,6 +6,7 @@
  */
   $repInclude = './include/';
   require($repInclude . "_init.inc.php");
+  
 
   // page inaccessible si utilisateur non connecté
   if (!estUtilisateurConnecte()) {
@@ -52,6 +53,7 @@
       if ( nbErreurs($tabErreurs) == 0 ) {
           // la nouvelle ligne ligne doit être ajoutée dans la base de données
           ajouterLigneHF($idConnexion, $mois, obtenirIdUserConnecte(), $dateHF, $libelleHF, $montantHF);
+          
       }
   }
   else { // on ne fait rien, étape non prévue 
@@ -63,14 +65,21 @@
       <h2>Renseigner ma fiche de frais du mois de <?php echo obtenirLibelleMois(intval(substr($mois,4,2))) . " " . substr($mois,0,4); ?></h2>
 <?php
   if ($etape == "validerSaisie" || $etape == "validerAjoutLigneHF" || $etape == "validerSuppressionLigneHF") {
+      
       if (nbErreurs($tabErreurs) > 0) {
-          echo toStringErreurs($tabErreurs);
+         echo toStringErreurs($tabErreurs);
       } 
       else {
 ?>
-      <p class="info">Les modifications de la fiche de frais ont bien été enregistrées</p>        
-<?php
-      }   
+      <p class="info">Les modifications de la fiche de frais ont bien été enregistrées</p>
+<?php 
+      }
+      
+      // Supprime les parametres Get dans l'url apres la demande de suppression
+      if ($etape == "validerSuppressionLigneHF") {
+          header("location: cSaisieFicheFrais.php");
+      }
+      $etape = ""; 
   }
       ?>            
       <form action="" method="post">
@@ -116,8 +125,7 @@
         
       </form>
   	<table class="listeLegere">
-  	   <caption>Descriptif des éléments hors forfait
-       </caption>
+  	   <caption>Descriptif des éléments hors forfait</caption>
              <tr>
                 <th class="date">Date</th>
                 <th class="libelle">Libellé</th>
@@ -137,16 +145,17 @@
               <tr>
                 <td><?php echo $lgEltHorsForfait["date"] ; ?></td>
                 <td><?php echo filtrerChainePourNavig($lgEltHorsForfait["libelle"]) ; ?></td>
-                <td><?php echo $lgEltHorsForfait["montant"] ; ?></td>
+                <td><?php echo $lgEltHorsForfait["montant"] ; ?> €</td>
 
                 <td>
-                    <img href="?etape=validerSuppressionLigneHF&amp;idLigneHF=<?php echo $lgEltHorsForfait["id"]; ?>" 
-                         class="icon" title="Refuser la ligne hors forfait"
+                    <a href="?etape=validerSuppressionLigneHF&amp;idLigneHF=<?php echo $lgEltHorsForfait["id"]; ?>">
+                        <img class="icon" title="Refuser la ligne hors forfait"
                          onclick="return confirm('Voulez-vous vraiment supprimer cette ligne de frais hors forfait ?');"
-                        alt="icone Supprimer" src="images/reinitialiserIcon.png">
+                         alt="icone Supprimer" src="images/reinitialiserIcon.png" />
+                    </a>
                     <!--<a href="?etape=validerSuppressionLigneHF&amp;idLigneHF=<?php echo $lgEltHorsForfait["id"]; ?>"
                     onclick="return confirm('Voulez-vous vraiment supprimer cette ligne de frais hors forfait ?');"
-                    title="Supprimer la ligne de frais hors forfait">Supprimer</a>--></td>
+                    title="Supprimer la ligne de frais hors forfait">Supprimer</a></td>-->
               </tr>
           <?php
               $lgEltHorsForfait = mysql_fetch_assoc($idJeuEltsHorsForfait);

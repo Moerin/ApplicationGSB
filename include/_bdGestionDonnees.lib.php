@@ -529,12 +529,11 @@ function cloturerFichesFrais($idCnx, $unMois) {
  * @param string $unEtat
  * @return void 
  */
-function finaliserFichesFrais($idCnx, $unMois, $unVisiteur, $unEtat) {
+function finaliserFichesFrais($idCnx, $unMois, $unVisiteur, $unMontant, $unEtat) {
     if ($unEtat == "VA") {
-       modifierEtatFicheFrais($idCnx, $unMois, $unVisiteur, "MP");
+       modifierEtatFicheFrais($idCnx, $unMois, $unVisiteur, $unMontant, "MP");
     } elseif ($unEtat == "MP") {
-        modifierEtatFicheFrais($idCnx, $unMois, $unVisiteur, "RB");
+        modifierEtatFicheFrais($idCnx, $unMois, $unVisiteur, $unMontant, "RB");
     }
 }
-
 ?>
