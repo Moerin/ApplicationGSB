@@ -189,7 +189,8 @@ function lireDonnee($nomDonnee, $valDefaut="") {
  * @return void
  */ 
 function ajouterErreur(&$tabErr,$msg) {
-    $tabErr[count($tabErr)]=$msg;
+    $indice = nbErreurs($tabErr);
+    $tabErr[$indice]=$msg;
 }
 
 /** 

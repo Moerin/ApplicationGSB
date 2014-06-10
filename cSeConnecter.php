@@ -25,7 +25,7 @@
     
     /* Vérifie si le mot de passe est déja hashé 1 = oui, 0 = non
      * Si le mot de passe n'est pas hashé on copie simplement la variable dans une variable qui sera
-     * passé dans les parametre de la fonction verifierInfosConnexionUtilisateur()
+     * passé dans les parametres de la fonction verifierInfosConnexionUtilisateur()
      * Sinon on le hash et on le met dans une variable qui sera comparé au mot de passe hashé dans la
      * base de donnée.
      */
@@ -48,7 +48,7 @@
   }
 
   require($repInclude . "_entete.inc.html");
-  require($repInclude . "_sommaire.inc.php");
+  //require($repInclude . "_sommaire.inc.php"); // provoque une erreur d'acces
   
 ?>
 <!-- Division pour le contenu principal -->

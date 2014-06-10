@@ -3,7 +3,7 @@
  * Regroupe les fonctions d'accès aux données.
  * 
  * @package default
- * @author Arthur Martin
+ * @author Arthur Martin, Sebastien Charret
  * @todo Fonctions retournant plusieurs lignes sont à réécrire.
  */
 
@@ -84,9 +84,9 @@ function filtrerChainePourBD($str) {
  */
 function obtenirDetailUtilisateur($idCnx, $unId) {
     $id = filtrerChainePourBD($unId);
-    $requete = "select utilisateur.id, nom, prenom, libelleFonction 
-        from utilisateur join fonction on idFonction = fonction.id 
-        where utilisateur.id='" . $unId . "'";
+    $requete = "SELECT utilisateur.id, nom, prenom, libelleFonction 
+        FROM utilisateur JOIN fonction ON idFonction = fonction.id 
+        WHERE utilisateur.id='" . $unId . "'";
     $idJeuRes = mysql_query($requete, $idCnx);  
     $ligne = false;     
     if ( $idJeuRes ) {
@@ -105,9 +105,9 @@ function obtenirDetailUtilisateur($idCnx, $unId) {
  * @return array  tableau associatif du utilisateur
  */
 function obtenirReqListeUtilisateur() { // TODO: renommer de façon plus pertinante
-    $requete = "SELECT distinct utilisateur.id, utilisateur.nom, utilisateur.prenom
-        from utilisateur join lignefraisforfait on utilisateur.id = idVisiteur
-        where idFonction = 1 order by nom";
+    $requete = "SELECT DISTINCT utilisateur.id, utilisateur.nom, utilisateur.prenom
+        FROM utilisateur JOIN lignefraisforfait ON utilisateur.id = idVisiteur
+        WHERE idFonction = 1 order by nom";
     return $requete;
 }
 
@@ -125,9 +125,9 @@ function obtenirReqListeUtilisateur() { // TODO: renommer de façon plus pertina
 function obtenirDetailFicheFrais($idCnx, $unMois, $unIdVisiteur) {
     $unMois = filtrerChainePourBD($unMois);
     $ligne = false;
-    $requete="select IFNULL(nbJustificatifs,0) as nbJustificatifs, etat.id as idEtat, libelle as libelleEtat, dateModif, montantValide 
-    from fichefrais inner join etat on idEtat = etat.id 
-    where idVisiteur='" . $unIdVisiteur . "' and mois='" . $unMois . "'";
+    $requete="SELECT IFNULL(nbJustificatifs,0) as nbJustificatifs, etat.id as idEtat, libelle as libelleEtat, dateModif, montantValide 
+    FROM fichefrais INNER JOIN etat ON idEtat = etat.id 
+    WHERE idVisiteur='" . $unIdVisiteur . "' AND mois='" . $unMois . "'";
     $idJeuRes = mysql_query($requete, $idCnx);  
     if ( $idJeuRes ) {
         $ligne = mysql_fetch_assoc($idJeuRes);
@@ -149,12 +149,12 @@ function obtenirDetailFicheFrais($idCnx, $unMois, $unIdVisiteur) {
  */
 function existeFicheFrais($idCnx, $unMois, $unIdVisiteur) {
     $unMois = filtrerChainePourBD($unMois);
-    $requete = "select idVisiteur from fichefrais where idVisiteur='" . $unIdVisiteur . 
-              "' and mois='" . $unMois . "'";
+    $requete = "SELECT idVisiteur FROM fichefrais WHERE idVisiteur='" . $unIdVisiteur . 
+              "' AND mois='" . $unMois . "'";
     $idJeuRes = mysql_query($requete, $idCnx) or die(mysql_error());  
     $ligne = false ;
     if ( $idJeuRes ) {
-        $ligne = mysql_fetch_assoc($idJeuRes) or die(mysql_error());
+        $ligne = mysql_fetch_assoc($idJeuRes);
         mysql_free_result($idJeuRes) or die(mysql_error());
     }        
     
@@ -219,7 +219,7 @@ function ajouterFicheFrais($idCnx, $unMois, $unIdVisiteur) {
     $requete = "insert into fichefrais (idVisiteur, mois, nbJustificatifs, montantValide, idEtat, dateModif) values ('" 
               . $unIdVisiteur 
               . "','" . $unMois . "',0,NULL, 'CR', '" . date("Y-m-d") . "')";
-    mysql_query($requete, $idCnx) or die(mysql_error());
+    mysql_query($requete, $idCnx);
     
     // ajout des éléments forfaitisés
     $requete = "select id from fraisforfait";
@@ -344,7 +344,7 @@ function reporterLigneHorsForfait($idCnx, $unIdLigneHF) {
  */
 function supprimerLigneHF($idCnx, $unIdLigneHF) {
     $requete = "delete from lignefraishorsforfait where id = " . $unIdLigneHF;
-    mysql_query($requete, $idCnx);
+    mysql_query($requete, $idCnx) or die(mysql_error());
 }
 
 /**
@@ -529,12 +529,11 @@ function cloturerFichesFrais($idCnx, $unMois) {
  * @param string $unEtat
  * @return void 
  */
-function finaliserFichesFrais($idCnx, $unMois, $unVisiteur, $unEtat) {
+function finaliserFichesFrais($idCnx, $unMois, $unVisiteur, $unMontant, $unEtat) {
     if ($unEtat == "VA") {
-       modifierEtatFicheFrais($idCnx, $unMois, $unVisiteur, "MP");
+       modifierEtatFicheFrais($idCnx, $unMois, $unVisiteur, $unMontant, "MP");
     } elseif ($unEtat == "MP") {
-        modifierEtatFicheFrais($idCnx, $unMois, $unVisiteur, "RB");
+        modifierEtatFicheFrais($idCnx, $unMois, $unVisiteur, $unMontant, "RB");
     }
 }
-
 ?>

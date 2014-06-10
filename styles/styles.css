@@ -1,8 +1,8 @@
 /* Styles des divisions principales de la page */
 body{
     background-color: #77AADD;
-	//background-image: url(imgs/FONDGLOBAL.jpg);
-	background-repeat: repeat-x;
+    //background-image: url(imgs/FONDGLOBAL.jpg);
+    background-repeat: repeat-x;
     margin:0% 0%;
     padding : 0.6em;
     font-family:"Trebuchet MS",Verdana,Geneva,Arial,Helvetica,sans-serif;
@@ -77,7 +77,7 @@ ul#menuList li {
     padding:0px;
 }
 
-/* apparences des liens dans listes et sous-listes non numerotees */
+/* apparences des liens dans listes et sous-listes non numerotées */
 ul#menuList a {
     color:rgb(0,85,227);
     display:block;
@@ -116,18 +116,24 @@ ul#menuList a:hover {
 .logoValidW3c {
   display: inline;
 }
+
 #libValidW3c{
   display : inline;
   vertical-align:middle;
 }
 
 /* Style des formulaires */
+form a {
+    cursor : pointer;
+}
+
 .corpsForm {
   border : solid 0.1em #000;
   border-bottom-width:1px;
   margin-bottom : 0em;
   width : 95%;
 }
+
 .piedForm {
   border-bottom-width : 0.1em;
   border-left-width : 0.1em;
@@ -139,13 +145,16 @@ ul#menuList a:hover {
   width : 95%;
   margin-top:0em;
 }
+
 form {
   margin-bottom:1em;  
 }
+
 .corpsForm legend {
   font-weight:bold;
   font-size:1.2em;
 }
+
 .corpsForm label{
   display: block;
   //text-align:right;
@@ -154,23 +163,26 @@ form {
   padding: 0 .5em 0 0;
   line-height: 1.8;	
 }
+
 input, button, textarea, select{
   font-family:"Trebuchet MS", sans-serif;
   font-size : 1em;
 }
+
 button{
   width : 60px;
   height : 30px;
   text-align:center;
   vertical-align:middle;
 }
+
 input:hover, textarea:hover, select:hover{
   background-color : #FAFAE6;
   cursor : pointer;
 }
 
 /*  Le texte des messages d'erreur est de couleur rose sur fond ocre et de 
-taille de caract�res l�g�rement sup�rieure � la normale */
+taille de caractères légèrement supèrieure à la normale */
 .erreur{ 
    background-color:rgb(237,210,229);
    color:rgb(203,28,128);
@@ -329,8 +341,9 @@ table.listeLegere th.libelle {
 
 #contenu img {
   height : 16px;
-  float : center;
+  //float : center;
   padding: 5px;
+  cursor: pointer;
 }
 
 /* Input des tableaux de cValidFrais.php */
@@ -394,4 +407,15 @@ table.listeLegere th.libelle {
 #contenu #inputValiderFiche {
     float:right;
     clear:both;
+}
+
+// Style pour page cryptPass.php
+.crypt {
+    font-family:"Trebuchet MS",Verdana,Geneva,Arial,Helvetica,sans-serif;
+    font-size:2.8em;
+}
+
+.crypt p {
+    margin: 0px 0 15px 10px;
+    font-size:1.5em;
 }

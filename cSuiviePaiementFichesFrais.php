@@ -20,6 +20,7 @@ $visiteurChoisi = lireDonnee("lstVisiteur");
 $moisChoisi = lireDonnee("lstMois");
 $etapeChoisi = lireDonnee("etape");
 $validationChoisi = lireDonneePost("validation");
+$montantTotalFicheFrais = lireDonneePost("lstMontant");
 $lgVisiteur = obtenirDetailUtilisateur($idConnexion, $visiteurChoisi);
 
 
@@ -33,7 +34,6 @@ $kmTotal = 0;
 
 // -- variable sur les éléments hors forfait --
 $libelleFraisHorsForfait = "";
-$montantFraisHorsForfait = "";
 $dateFraisHorsForfait = "";
 
 // actions sur les difféntes étapes du cas d'utilisation
@@ -43,7 +43,10 @@ if ($etapeChoisi == "choixVisiteur") {
 
 // Finalisation de la fiche de Frais modification différente selon l'etat de la fiche pendant sa consultation
 } elseif ($etapeChoisi == "finaliserFicheFrais") {
-    finaliserFichesFrais($idConnexion, $moisChoisi, $visiteurChoisi, $validationChoisi);
+    finaliserFichesFrais($idConnexion, $moisChoisi, $visiteurChoisi, $montantTotalFicheFrais, $validationChoisi);
+    if ($validationChoisi == "MP") {
+        $moisChoisi = ""; // Dans le cas ou la fiche correspond a l'etat "Remboursée", le mois est remis a zero pour proposer la selection d'un nouveau mois       
+    }
 }
 ?>
 
@@ -59,7 +62,7 @@ if ($etapeChoisi == "choixVisiteur") {
             <label class="title">Choisir le visiteur :</label>
             <select name="lstVisiteur" id="idLstVisiteur" class="zone" onchange="this.form.submit();" >
                 <?php
-                // Dans le cas où aucun visiteur n'a été choisi on le signifie dans le sélection de liste
+                // Dans le cas où aucun visiteur n'a été choisi on le signifie dans la liste de selection
                 if ( $visiteurChoisi == "") {
                 ?>
                 <option value="-1"> Sélectionner un visiteur médical </option>
@@ -93,7 +96,7 @@ if ($etapeChoisi == "choixVisiteur") {
                 <input type="hidden" name="lstVisiteur" value="<?php echo $visiteurChoisi; ?>" />
                 
                 <?php
-                $req = obtenirReqMoisFicheFraisValidée($visiteurChoisi);
+                $req = obtenirReqMoisFicheFraisValidee($visiteurChoisi);
                 $idJeuFiches = mysql_query($req, $idConnexion);
                 $lgFiche = mysql_fetch_assoc($idJeuFiches);
                 /* On vérifie que l'utilisateur possède bien des fiches validée, mise en paiement ou remboursée
@@ -103,6 +106,7 @@ if ($etapeChoisi == "choixVisiteur") {
                 if (empty($lgFiche)){
                     ajouterErreur($tabErreurs, "Pas de fiche de frais à mettre en paiement pour ce visiteur");
                     echo toStringErreurs($tabErreurs);
+                    exit();
                 }else {
                 ?>
                 <label class="title">Choisir la fiche :</label>
@@ -126,7 +130,8 @@ if ($etapeChoisi == "choixVisiteur") {
                         if ($etatFiche == "VA") {
                         ?>    
                         <optgroup label="Validée">
-                            <option value="<?php echo $mois;?>"><?php echo $noMois . ' ' . $libelleMois . ' ' . $annee;?></option>
+                            <option value="<?php echo $mois;?>"<?php 
+                    if ($moisChoisi == $lgFiche["mois"]) { ?> selected="selected"<?php } ?>><?php echo $noMois . ' ' . $libelleMois . ' ' . $annee;?></option>
                         </optgroup>
                         <?php    
                         }
@@ -172,18 +177,25 @@ if ($etapeChoisi == "choixVisiteur") {
     while(is_array($lgEltsForfait)) {
         if ($lgEltsForfait["idFraisForfait"] == "ETP") {
             $etp = $lgEltsForfait["quantite"];
+            $etpMontant = $lgEltsForfait["montant"];
         } elseif ($lgEltsForfait["idFraisForfait"] == "KM4d") {
             $km4d = $lgEltsForfait["quantite"];
+            $km4dMontant = $lgEltsForfait["montant"];
         } elseif ($lgEltsForfait["idFraisForfait"] == "KM4e") {
             $km4e = $lgEltsForfait["quantite"];
+            $km4eMontant = $lgEltsForfait["montant"];
         } elseif ($lgEltsForfait["idFraisForfait"] == "KM56d") {
             $km56d = $lgEltsForfait["quantite"];
+            $km56dMontant = $lgEltsForfait["montant"];
         } elseif ($lgEltsForfait["idFraisForfait"] == "KM56e") {
             $km56e = $lgEltsForfait["quantite"];
+            $km56eMontant = $lgEltsForfait["montant"];
         } elseif ($lgEltsForfait["idFraisForfait"] == "NUI") {
             $nui = $lgEltsForfait["quantite"]; 
+            $nuiMontant = $lgEltsForfait["montant"];
         } else {
             $rep = $lgEltsForfait["quantite"];
+            $repMontant = $lgEltsForfait["montant"];
         }
         $lgEltsForfait = mysql_fetch_assoc($idJeuForfait);
     }
@@ -198,40 +210,37 @@ if ($etapeChoisi == "choixVisiteur") {
                <tr>
                    <td class="alignGauche"> * Forfait Etape : </td>
                    <td> <?php echo $etp; ?> x 110.00 € = </td>
-                   <td class="alignDroite"> <?php $etpTotal = $etp * 110.00; echo $etpTotal; ?> € </td> 
-                   <?php
-                   // TODO : remplacer les valeurs en dur des montant par leurs homologues de la base de donnée
-                   ?>
+                   <td class="alignDroite"> <?php $etpTotal = $etp * $etpMontant; echo $etpTotal; ?> € </td> 
                </tr>
                <tr>
                    <td class="alignGauche"> * Frais Kilométrique (Véhicule 4CV Diesel) : </td>
                    <td> <?php echo $km4d; ?> x 0.52 € = </td>
-                   <td class="alignDroite"> <?php $montantKm4d = $km4d * 0.52; echo $montantKm4d; ?> € </td>
+                   <td class="alignDroite"> <?php $montantKm4d = $km4d * $km4dMontant; echo $montantKm4d; ?> € </td>
                </tr>
                <tr>
                    <td class="alignGauche"> * Frais Kilométrique (Véhicule 4CV Essence) : </td>
                    <td> <?php echo $km4e; ?> x 0.62 € = </td>
-                   <td class="alignDroite"> <?php $montantKm4e = $km4e * 0.62; echo $montantKm4e; ?> € </td>
+                   <td class="alignDroite"> <?php $montantKm4e = $km4e * $km4eMontant; echo $montantKm4e; ?> € </td>
                </tr>
                <tr>
                    <td class="alignGauche"> * Frais Kilométrique (Véhicule 5-6CV Diesel) : </td>
                    <td> <?php echo $km56d; ?> x 0.58 € = </td>
-                   <td class="alignDroite"> <?php $montantKm56d = $km56d * 0.58; echo $montantKm56d; ?> € </td>
+                   <td class="alignDroite"> <?php $montantKm56d = $km56d * $km56dMontant; echo $montantKm56d; ?> € </td>
                </tr>
                <tr>
                    <td class="alignGauche"> * Frais Kilométrique (Véhicule 5-6CV Essence) : </td>
                    <td> <?php echo $km56e; ?> x 0.67 € = </td>
-                   <td class="alignDroite"> <?php $montantKm56e = $km56e * 0.67; echo $montantKm56e; ?> € </td>
+                   <td class="alignDroite"> <?php $montantKm56e = $km56e * $km56eMontant; echo $montantKm56e; ?> € </td>
                </tr>
                <tr>
                    <td class="alignGauche"> * Nuitée Hôtel : </td>
                    <td> <?php echo $nui; ?> x 80.00 € = </td>
-                   <td class="alignDroite"> <?php $nuiTotal = $nui * 80.00; echo $nuiTotal; ?> € </td>
+                   <td class="alignDroite"> <?php $nuiTotal = $nui * $nuiMontant; echo $nuiTotal; ?> € </td>
                </tr>
                <tr>
                    <td class="alignGauche"> * Repas Restaurant : </td>
                    <td> <?php echo $rep; ?> x 25.00 € = </td>
-                   <td class="alignDroite"> <?php $repTotal = $rep * 25.00; echo $repTotal; ?> € </td>
+                   <td class="alignDroite"> <?php $repTotal = $rep * $repMontant; echo $repTotal; ?> € </td>
                </tr>
                <tr>
                    <td class="alignGauche ecritureLargeGras" colspan="2"> TOTAL DES ELEMENTS FORFAITISES :  </td>
@@ -288,9 +297,9 @@ if ($etapeChoisi == "choixVisiteur") {
             </tbody>
         </table>
         <?php
-        $laFicheFrais = obtenirDetailFicheFrais($idConnexion, $moisChoisi, $visiteurChoisi);
+        //$laFicheFrais = obtenirDetailFicheFrais($idConnexion, $moisChoisi, $visiteurChoisi);
         ?>
-        <p> Nombre de Justificatif : <?php echo $laFicheFrais['nbJustificatifs'];?> </p> 
+        <p> Nombre de Justificatif : <?php echo $tabFicheFrais['nbJustificatifs'];?> </p> 
         <?php        
         mysql_free_result($idJeuEltsHorsForfait);
         ?>
@@ -305,19 +314,20 @@ if ($etapeChoisi == "choixVisiteur") {
      * Cas d'utilisation 6 - 6a
      */
     ?>
-    <form id="formFinaliserFicheFrais" method="post" action="">
+    <form id="formFinaliserFicheFrais" method="post" action="cSuiviePaiementFichesFrais.php">
         <p>
             <input type="hidden" name="etape" value="finaliserFicheFrais" />
             <input type="hidden" name="lstVisiteur" value="<?php echo $visiteurChoisi; ?>" />
             <input type="hidden" name="lstMois" value="<?php echo $moisChoisi; ?>" />
+            <input type="hidden" name="lstMontant" value="<?php echo $tabFicheFrais["montantValide"]; ?>" />
             <?php
-            if ($etatFiche == "VA") { // Si la fiche est validée
+            if ($tabFicheFrais["idEtat"] == "VA") { // Si la fiche est validée
             ?>
             <input type="hidden" name="validation" value="VA" />
             <input id="inputValiderFiche" class="zone" type="button" onclick="mettreEnPaiementFicheFrais();" 
                 value="Mettre En Paiement" />
             <?php
-            } else { // Si la fiche est mise en paiement
+            } else if ($tabFicheFrais["idEtat"] == "MP"){ // Si la fiche est mise en paiement
             ?>
             <input type="hidden" name="validation" value="MP" />
             <input id="inputValiderFiche" class="zone" type="button" onclick="rembourséeFicheFrais();" 
