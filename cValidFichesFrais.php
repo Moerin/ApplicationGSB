@@ -78,11 +78,13 @@ if ($etapeChoisi == "choixVisiteur") {
     }
     // Verification de éléments constituant la fiche de frais
     verifierLigneFraisHF($dateFraisHorsForfait, $libelleFraisHorsForfait, $montantTotalFicheFrais, $tabErreurs);
-    if ($tabErreurs != 0) { // si aucune erreur est présente on passe à la modification
+    if (nbErreurs($tabErreurs) == 0) { // si aucune erreur est présente on passe à la modification
         modifierEltsHorsForfait($idConnexion, $tabQteEltsHorsForfait);
         ?>
         <p class="info">L'actualisation des éléments hors forfait a bien été enregistré</p>
         <?php
+    } else { // sinon on affiche les erreurs
+        echo toStringErreurs($tabErreurs);
     }
 // étape d'actualisation des nombres de justificatifs
 } elseif ($etapeChoisi == "actualiserNbJustificatifs") {
