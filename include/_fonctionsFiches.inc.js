@@ -60,7 +60,7 @@ function afficheMsgNbJustificatifs() {
  * @param char(3) km nombre de kilomètres
  * @return void
  */
-function actualiserLigneFraisForfait(rep,nui,etp,km4d,km4e,km56d,km56e) {
+function actualiserLigneFraisForfait(etp,km4d,km4e,km56d,km56e,rep,nui) {
     // Trouver quelles sont les mises à jour à réaliser
     var modif = false;
     var txtModifs = '';
@@ -280,6 +280,7 @@ function validerFiche() {
         var unForm = forms[cpt];
         if (unForm.id) {
             if(unForm.id.search('formFraisHorsForfait') != -1) {
+                // id.replace permet de supprimer la partie de la chaine passe en parametre ex : 'formFraisHorsForfait8' => '8'
                 if(document.getElementById('idLibelle'+ unForm.id.replace('formFraisHorsForfait',"")).value.search('REFUSÉ : ') != -1) {
                     nbRefus++;
                 } else {            
