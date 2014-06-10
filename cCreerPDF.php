@@ -14,7 +14,7 @@ require('pdf/fpdf.php');
 class PDF extends FPDF
 {
     
-    // Fonction qui convertit les caractères latin en en format UTF8 lisible ex: €
+    // Fonction qui convertit les caractères latin en un format UTF8 lisible ex: €
     function utf2latin($text) {
         $text=htmlentities($text,ENT_COMPAT,'UTF-8');
         return html_entity_decode($text,ENT_COMPAT,'ISO-8859-1');
@@ -141,7 +141,7 @@ class PDF extends FPDF
             $this->Cell(10);
             $this->Cell(50, 7, convertirDateAnglaisVersFrancais($lgFraisHorsForfait['date']), 1, 0, 'L', true);
             $this->Cell(80, 7, $lgFraisHorsForfait['libelle'], 1, 0, 'L', true);
-            $this->Cell(40, 7, $lgFraisHorsForfait['montant'], 1, 0, 'R', true);
+            $this->Cell(40, 7, $lgFraisHorsForfait['montant'] . iconv("UTF-8", "CP1252", " €"), 1, 0, 'R', true);
             $this->Ln();
         }
         $idJeuFraisHorsForfait->closeCursor();
@@ -158,7 +158,7 @@ class PDF extends FPDF
         $noMois = intval(substr($idMois, 4, 2));
         $annee = intval(substr($idMois, 0, 4));
         $this->Cell(40, 7, 'MONTANT TOTAL ', 1, 0, 'L', true);
-        $this->Cell(40, 7, $lgFicheFrais['montantValide'], 1, 0, 'R', true);
+        $this->Cell(40, 7, $lgFicheFrais['montantValide'] . iconv("UTF-8", "CP1252", " €"), 1, 0, 'R', true);
     }
     
     // Affichage de la fiche de frais

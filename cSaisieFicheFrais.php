@@ -23,7 +23,7 @@
       ajouterFicheFrais($idConnexion, $mois, obtenirIdUserConnecte());
   }
   // acquisition des données entrées
-  // acquisition de l'étape du traitement 
+  // acquisition de l'étape du traitement
   $etape=lireDonnee("etape","demanderSaisie");
   // acquisition des quantités des éléments forfaitisés 
   $tabQteEltsForfait=lireDonneePost("txtEltsForfait", "");
