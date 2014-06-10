@@ -82,6 +82,7 @@
       }
       $etape = ""; 
   }
+  
       ?>            
       <form action="" method="post">
       <div class="corpsForm">
