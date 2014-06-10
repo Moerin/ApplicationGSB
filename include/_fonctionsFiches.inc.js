@@ -277,11 +277,10 @@ function validerFiche() {
     var nbValid = 0;
     var forms = document.getElementsByTagName('form');
     for (var cpt = 0; cpt < forms.length; cpt++) {
-        console.log(forms.length);
         var unForm = forms[cpt];
         if (unForm.id) {
-            console.log(unForm.id);
             if(unForm.id.search('formFraisHorsForfait') != -1) {
+                // id.replace permet de supprimer la partie de la chaine passe en parametre ex : 'formFraisHorsForfait8' => '8'
                 if(document.getElementById('idLibelle'+ unForm.id.replace('formFraisHorsForfait',"")).value.search('REFUSÉ : ') != -1) {
                     nbRefus++;
                 } else {            
