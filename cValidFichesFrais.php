@@ -346,7 +346,7 @@ if ($etapeChoisi == "choixVisiteur") {
                             title="Actualiser la ligne hors forfait"  title="Actualiser la ligne de frais hors forfait" />
                         <!--<img src="images/reinitialiserIcon.png" id="lkReinitialiserLigneFraisHF" class="icon"
                             alt="icone Réinitialiser" onclick="reinitialiserLigneFraisHorsForfait('<?php echo $lgEltsHorsForfait['id']; ?>');" 
-                            title="Rénitialiser la ligne hors forfait" />-->
+                            title="Réinitialiser la ligne hors forfait" />-->
                             <?php
                             // L'option "Supprimer" n'est proposée que si les frais n'ont pas déjà été refusés
                             if (strpos($lgEltsHorsForfait['libelle'], 'REFUSÉ : ') === false) {
